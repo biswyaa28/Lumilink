@@ -1,0 +1,2890 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>LUMILINK — AI-Powered Freelance Matching Platform</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { inter: ["Inter", "sans-serif"] },
+                        colors: {
+                            lime: {
+                                300: "#bef264",
+                                400: "#a3e635",
+                                500: "#84cc16",
+                                600: "#65a30d",
+                                950: "#1a2e05",
+                            },
+                            brand: {
+                                dark: "#0a0a0a",
+                                card: "#171717",
+                                border: "rgba(255,255,255,0.1)",
+                            },
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                font-family: "Inter", sans-serif;
+                background: #0a0a0a;
+                color: #fff;
+                overflow: hidden;
+                height: 100%;
+            }
+            ::-webkit-scrollbar {
+                width: 0;
+            }
+
+            .slide {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transition:
+                    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+                transform: translateY(30px) scale(0.98);
+            }
+            .slide.active {
+                opacity: 1;
+                pointer-events: all;
+                transform: translateY(0) scale(1);
+            }
+            .slide.exit-up {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.98);
+            }
+
+            .stagger-1 {
+                animation: fadeUp 0.7s 0.1s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .stagger-2 {
+                animation: fadeUp 0.7s 0.2s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .stagger-3 {
+                animation: fadeUp 0.7s 0.3s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .stagger-4 {
+                animation: fadeUp 0.7s 0.4s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .stagger-5 {
+                animation: fadeUp 0.7s 0.5s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .stagger-6 {
+                animation: fadeUp 0.7s 0.6s both cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(25px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-8px);
+                }
+            }
+            @keyframes pulse-glow {
+                0%,
+                100% {
+                    box-shadow: 0 0 20px rgba(163, 230, 53, 0.3);
+                }
+                50% {
+                    box-shadow: 0 0 40px rgba(163, 230, 53, 0.6);
+                }
+            }
+            @keyframes spin-slow {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .float-anim {
+                animation: float 3s ease-in-out infinite;
+            }
+            .float-anim-delay {
+                animation: float 3s 1.5s ease-in-out infinite;
+            }
+            .glow-pulse {
+                animation: pulse-glow 2s ease-in-out infinite;
+            }
+            .spin-slow {
+                animation: spin-slow 20s linear infinite;
+            }
+
+            .bar-animate {
+                transition:
+                    height 1s cubic-bezier(0.16, 1, 0.3, 1),
+                    width 1s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.5s;
+            }
+
+            .grid-lines {
+                background-image:
+                    linear-gradient(
+                        rgba(255, 255, 255, 0.03) 1px,
+                        transparent 1px
+                    ),
+                    linear-gradient(
+                        90deg,
+                        rgba(255, 255, 255, 0.03) 1px,
+                        transparent 1px
+                    );
+                background-size: 60px 60px;
+            }
+            .dot-pattern {
+                background-image: radial-gradient(
+                    rgba(163, 230, 53, 0.15) 1px,
+                    transparent 1px
+                );
+                background-size: 20px 20px;
+            }
+
+            .nav-dot {
+                transition: all 0.3s ease;
+                cursor: pointer;
+            }
+            .nav-dot.active {
+                background: #a3e635;
+                width: 32px;
+                border-radius: 9999px;
+            }
+
+            .slide-number {
+                font-variant-numeric: tabular-nums;
+            }
+
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                background: rgba(255, 255, 255, 0.08);
+                transform: translateY(-2px);
+            }
+
+            .text-gradient {
+                background: linear-gradient(135deg, #a3e635, #84cc16, #65a30d);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .text-gradient-light {
+                background: linear-gradient(135deg, #ffffff, #d4d4d4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .border-gradient {
+                border: 1px solid transparent;
+                background-origin: border-box;
+                background-clip: padding-box, border-box;
+                background-image:
+                    linear-gradient(#171717, #171717),
+                    linear-gradient(
+                        135deg,
+                        rgba(163, 230, 53, 0.3),
+                        transparent
+                    );
+            }
+
+            .nav-btn {
+                transition: all 0.15s ease;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .nav-btn:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+            .nav-btn:active {
+                transform: scale(0.85);
+                background: rgba(255, 255, 255, 0.25);
+            }
+        </style>
+    </head>
+    <body class="font-inter">
+        <!-- Background Elements -->
+        <div class="fixed inset-0 z-0 pointer-events-none">
+            <div
+                class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-lime-400/5 rounded-full blur-[120px]"
+            ></div>
+            <div
+                class="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-lime-400/3 rounded-full blur-[100px]"
+            ></div>
+            <div class="absolute inset-0 grid-lines"></div>
+        </div>
+
+        <!-- Top Bar -->
+        <header
+            class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16"
+            style="
+                background: rgba(10, 10, 10, 0.8);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            "
+        >
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-lime-400 rounded-lg flex items-center justify-center"
+                >
+                    <i data-lucide="zap" class="w-4 h-4 text-neutral-900"></i>
+                </div>
+                <span class="text-sm font-semibold tracking-tight"
+                    >LUMILINK</span
+                >
+            </div>
+            <div class="flex items-center gap-4">
+                <span
+                    class="slide-number text-xs text-neutral-500 tracking-widest"
+                    ><span id="currentSlide">01</span> / 12</span
+                >
+                <div class="flex gap-1.5" id="navDots"></div>
+            </div>
+        </header>
+
+        <!-- Slides Container -->
+        <main class="relative w-full h-full" id="slidesContainer">
+            <!-- SLIDE 1: Cover -->
+            <section class="slide active" data-slide="0">
+                <div
+                    class="flex flex-col items-center justify-center h-full px-6 text-center relative"
+                >
+                    <div class="absolute inset-0 dot-pattern opacity-30"></div>
+                    <div class="relative z-10 max-w-5xl mx-auto">
+                        <div
+                            class="stagger-1 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8"
+                        >
+                            <span
+                                class="w-2 h-2 rounded-full bg-lime-400 glow-pulse"
+                            ></span
+                            ><span
+                                class="text-[10px] font-semibold tracking-[0.15em] uppercase text-neutral-400"
+                                >AI-Powered Matching Engine</span
+                            >
+                        </div>
+                        <h1
+                            class="stagger-2 text-5xl md:text-7xl lg:text-[96px] font-semibold tracking-tighter leading-[0.9] mb-6"
+                        >
+                            <span class="text-gradient">LUMI</span
+                            ><span class="text-gradient-light">LINK</span>
+                        </h1>
+                        <p
+                            class="stagger-3 text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-10"
+                        >
+                            The AI Matching Engine That Makes Freelancing
+                            Collaborative Again
+                        </p>
+                        <div
+                            class="stagger-4 flex items-center justify-center gap-4"
+                        >
+                            <button
+                                onclick="goToSlide(1)"
+                                class="px-6 py-3 bg-lime-400 text-neutral-900 rounded-xl text-sm font-semibold tracking-tight hover:bg-lime-300 transition-colors duration-300 flex items-center gap-2"
+                            >
+                                Explore the Vision
+                                <i
+                                    data-lucide="arrow-right"
+                                    class="w-4 h-4"
+                                ></i>
+                            </button>
+                            <button
+                                onclick="goToSlide(5)"
+                                class="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-medium tracking-tight hover:bg-white/10 transition-colors duration-300"
+                            >
+                                See the Market
+                            </button>
+                        </div>
+                        <div
+                            class="stagger-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none opacity-20"
+                        >
+                            <svg viewBox="0 0 500 500" class="spin-slow">
+                                <circle
+                                    cx="250"
+                                    cy="250"
+                                    r="200"
+                                    fill="none"
+                                    stroke="url(#grad1)"
+                                    stroke-width="0.5"
+                                    stroke-dasharray="8 12"
+                                />
+                                <circle
+                                    cx="250"
+                                    cy="250"
+                                    r="230"
+                                    fill="none"
+                                    stroke="url(#grad1)"
+                                    stroke-width="0.3"
+                                    stroke-dasharray="4 16"
+                                />
+                                <defs>
+                                    <linearGradient
+                                        id="grad1"
+                                        x1="0%"
+                                        y1="0%"
+                                        x2="100%"
+                                        y2="100%"
+                                    >
+                                        <stop
+                                            offset="0%"
+                                            style="
+                                                stop-color: #a3e635;
+                                                stop-opacity: 0.6;
+                                            "
+                                        />
+                                        <stop
+                                            offset="100%"
+                                            style="
+                                                stop-color: #a3e635;
+                                                stop-opacity: 0;
+                                            "
+                                        />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 2: Problem -->
+            <section class="slide" data-slide="1">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >01 — The Problem</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-8 max-w-4xl"
+                    >
+                        Legacy platforms flood clients with spam and trap
+                        newcomers in a
+                        <span class="text-gradient">race to the bottom</span>.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+                    >
+                        <div class="border-gradient rounded-2xl p-6 card-hover">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center mb-4"
+                            >
+                                <i
+                                    data-lucide="alert-triangle"
+                                    class="w-5 h-5 text-red-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Spam Overload
+                            </h3>
+                            <p class="text-xs text-neutral-500 leading-relaxed">
+                                Clients receive 50+ unqualified proposals per
+                                posting, making quality impossible to find.
+                            </p>
+                        </div>
+                        <div class="border-gradient rounded-2xl p-6 card-hover">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4"
+                            >
+                                <i
+                                    data-lucide="trending-down"
+                                    class="w-5 h-5 text-orange-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Price Compression
+                            </h3>
+                            <p class="text-xs text-neutral-500 leading-relaxed">
+                                New freelancers undercut to win, driving rates
+                                below sustainable levels across categories.
+                            </p>
+                        </div>
+                        <div class="border-gradient rounded-2xl p-6 card-hover">
+                            <div
+                                class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-4"
+                            >
+                                <i
+                                    data-lucide="eye-off"
+                                    class="w-5 h-5 text-yellow-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Visibility Paywall
+                            </h3>
+                            <p class="text-xs text-neutral-500 leading-relaxed">
+                                Incumbents charge for profile visibility,
+                                creating a pay-to-play ecosystem that excludes
+                                talent.
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="stagger-4 flex items-center gap-3 text-neutral-600"
+                    >
+                        <i
+                            data-lucide="arrow-right"
+                            class="w-4 h-4 text-lime-400"
+                        ></i
+                        ><span class="text-xs tracking-wide"
+                            >The result: 67% of clients report poor hiring
+                            outcomes on traditional platforms</span
+                        >
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 3: AI Matching Solution -->
+            <section class="slide" data-slide="2">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >02 — The Solution</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        AI-driven double-sided matching replaces bidding wars
+                        with
+                        <span class="text-gradient"
+                            >hyper-personalized alignment</span
+                        >.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+                    >
+                        <div class="relative">
+                            <div
+                                class="bg-neutral-900/80 rounded-[32px] p-8 border border-white/5"
+                            >
+                                <div
+                                    class="flex items-center justify-between mb-6"
+                                >
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center text-neutral-900 text-xs font-bold"
+                                        >
+                                            AI
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-semibold">
+                                                Matching Engine
+                                            </div>
+                                            <div
+                                                class="text-[10px] text-neutral-500"
+                                            >
+                                                Processing alignment scores...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="w-2 h-2 rounded-full bg-lime-400 glow-pulse"
+                                    ></div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div
+                                        class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+                                    >
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-[10px] font-bold"
+                                        >
+                                            CL
+                                        </div>
+                                        <div class="flex-1">
+                                            <div
+                                                class="h-1.5 rounded-full bg-neutral-800 overflow-hidden"
+                                            >
+                                                <div
+                                                    class="h-full rounded-full bg-lime-400 bar-animate"
+                                                    style="width: 0%"
+                                                    data-width="94%"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-[10px] font-bold"
+                                        >
+                                            FR
+                                        </div>
+                                        <span
+                                            class="text-[10px] font-semibold text-lime-400 ml-1"
+                                            >94%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+                                    >
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 text-[10px] font-bold"
+                                        >
+                                            SM
+                                        </div>
+                                        <div class="flex-1">
+                                            <div
+                                                class="h-1.5 rounded-full bg-neutral-800 overflow-hidden"
+                                            >
+                                                <div
+                                                    class="h-full rounded-full bg-lime-400 bar-animate"
+                                                    style="width: 0%"
+                                                    data-width="87%"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 text-[10px] font-bold"
+                                        >
+                                            DS
+                                        </div>
+                                        <span
+                                            class="text-[10px] font-semibold text-lime-400 ml-1"
+                                            >87%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+                                    >
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-[10px] font-bold"
+                                        >
+                                            AG
+                                        </div>
+                                        <div class="flex-1">
+                                            <div
+                                                class="h-1.5 rounded-full bg-neutral-800 overflow-hidden"
+                                            >
+                                                <div
+                                                    class="h-full rounded-full bg-lime-400/60 bar-animate"
+                                                    style="width: 0%"
+                                                    data-width="72%"
+                                                ></div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 text-[10px] font-bold"
+                                        >
+                                            UX
+                                        </div>
+                                        <span
+                                            class="text-[10px] font-semibold text-neutral-500 ml-1"
+                                            >72%</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-5">
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-lime-400/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+                                >
+                                    <i
+                                        data-lucide="brain"
+                                        class="w-4 h-4 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Multi-Vector Compatibility
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Skills, communication style, timezone,
+                                        work cadence, and project complexity
+                                        scored simultaneously.
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-lime-400/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+                                >
+                                    <i
+                                        data-lucide="refresh-cw"
+                                        class="w-4 h-4 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Double-Sided Preference
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Freelancers rank projects; clients rank
+                                        candidates—mutual interest drives the
+                                        match, not algorithms alone.
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-lime-400/10 flex items-center justify-center flex-shrink-0 mt-0.5"
+                                >
+                                    <i
+                                        data-lucide="shield-check"
+                                        class="w-4 h-4 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Bias-Aware Scoring
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Blind initial screening removes
+                                        demographic signals, ensuring matches
+                                        reflect competence, not privilege.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 4: Swipe Interface -->
+            <section class="slide" data-slide="3">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >03 — The Experience</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        A swipe-based interface turns tedious hiring into an
+                        intuitive,
+                        <span class="text-gradient">chemistry-first</span>
+                        discovery experience.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+                    >
+                        <div class="flex justify-center">
+                            <div class="relative w-[280px]">
+                                <div
+                                    class="bg-neutral-900 rounded-[36px] p-3 border border-white/10 shadow-2xl"
+                                >
+                                    <div
+                                        class="bg-neutral-800 rounded-[28px] overflow-hidden"
+                                    >
+                                        <div
+                                            class="flex justify-between items-center px-5 pt-3 pb-2"
+                                        >
+                                            <span
+                                                class="text-[10px] font-medium"
+                                                >9:41</span
+                                            >
+                                            <div
+                                                class="w-20 h-5 bg-neutral-700 rounded-full"
+                                            ></div>
+                                            <div class="flex gap-1">
+                                                <i
+                                                    data-lucide="signal"
+                                                    class="w-3 h-3 text-neutral-400"
+                                                ></i
+                                                ><i
+                                                    data-lucide="battery"
+                                                    class="w-3 h-3 text-neutral-400"
+                                                ></i>
+                                            </div>
+                                        </div>
+                                        <div class="px-5 py-3">
+                                            <div
+                                                class="text-xs font-semibold mb-0.5"
+                                            >
+                                                Discover Projects
+                                            </div>
+                                            <div
+                                                class="text-[10px] text-neutral-500"
+                                            >
+                                                3 new matches today
+                                            </div>
+                                        </div>
+                                        <div class="px-4 pb-4 relative">
+                                            <div
+                                                class="absolute inset-x-4 top-0 h-52 bg-white/5 rounded-2xl border border-white/5 transform rotate-3 scale-95"
+                                            ></div>
+                                            <div
+                                                class="absolute inset-x-4 top-0 h-52 bg-white/5 rounded-2xl border border-white/5 transform -rotate-2 scale-[0.97]"
+                                            ></div>
+                                            <div
+                                                class="relative bg-white/10 rounded-2xl border border-lime-400/20 p-4 backdrop-blur-sm"
+                                            >
+                                                <div
+                                                    class="flex items-center gap-3 mb-3"
+                                                >
+                                                    <img
+                                                        src="https://picsum.photos/seed/startup-co/40/40.jpg"
+                                                        class="w-10 h-10 rounded-xl object-cover"
+                                                        alt=""
+                                                    />
+                                                    <div>
+                                                        <div
+                                                            class="text-xs font-semibold"
+                                                        >
+                                                            Meridian Studio
+                                                        </div>
+                                                        <div
+                                                            class="text-[10px] text-neutral-500"
+                                                        >
+                                                            Brand Identity
+                                                            System
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="flex flex-wrap gap-1.5 mb-3"
+                                                >
+                                                    <span
+                                                        class="px-2 py-0.5 bg-lime-400/10 text-lime-400 rounded-md text-[9px] font-medium"
+                                                        >Branding</span
+                                                    ><span
+                                                        class="px-2 py-0.5 bg-blue-400/10 text-blue-400 rounded-md text-[9px] font-medium"
+                                                        >Design</span
+                                                    ><span
+                                                        class="px-2 py-0.5 bg-purple-400/10 text-purple-400 rounded-md text-[9px] font-medium"
+                                                        >Strategy</span
+                                                    >
+                                                </div>
+                                                <div
+                                                    class="text-[10px] text-neutral-400 leading-relaxed mb-3"
+                                                >
+                                                    Seeking a creative partner
+                                                    for a 3-month rebrand
+                                                    collaboration with potential
+                                                    for ongoing retainer.
+                                                </div>
+                                                <div
+                                                    class="flex items-center justify-between"
+                                                >
+                                                    <div
+                                                        class="flex items-center gap-1"
+                                                    >
+                                                        <i
+                                                            data-lucide="zap"
+                                                            class="w-3 h-3 text-lime-400"
+                                                        ></i
+                                                        ><span
+                                                            class="text-[10px] font-semibold text-lime-400"
+                                                            >94% Match</span
+                                                        >
+                                                    </div>
+                                                    <span
+                                                        class="text-[10px] text-neutral-500"
+                                                        >$4-6K</span
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="flex justify-center gap-6 pb-5"
+                                        >
+                                            <button
+                                                class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-500/20 hover:border-red-500/30 transition-colors"
+                                            >
+                                                <i
+                                                    data-lucide="x"
+                                                    class="w-5 h-5 text-neutral-400"
+                                                ></i></button
+                                            ><button
+                                                class="w-12 h-12 rounded-full bg-lime-400 flex items-center justify-center hover:bg-lime-300 transition-colors shadow-lg shadow-lime-400/20"
+                                            >
+                                                <i
+                                                    data-lucide="heart"
+                                                    class="w-5 h-5 text-neutral-900"
+                                                ></i></button
+                                            ><button
+                                                class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-blue-500/20 hover:border-blue-500/30 transition-colors"
+                                            >
+                                                <i
+                                                    data-lucide="bookmark"
+                                                    class="w-5 h-5 text-neutral-400"
+                                                ></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 float-anim"
+                                >
+                                    <i
+                                        data-lucide="sparkles"
+                                        class="w-5 h-5 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Smart Stacks
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        AI-curated card stacks present only
+                                        high-compatibility opportunities,
+                                        eliminating noise entirely.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 float-anim-delay"
+                                >
+                                    <i
+                                        data-lucide="git-merge"
+                                        class="w-5 h-5 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Mutual Intent
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Both sides swipe; a connection only
+                                        forms when interest is mutual—like
+                                        dating apps, but for careers.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 float-anim"
+                                >
+                                    <i
+                                        data-lucide="message-circle"
+                                        class="w-5 h-5 text-lime-400"
+                                    ></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Conversation Starters
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        AI-generated icebreakers based on shared
+                                        interests eliminate awkward first
+                                        messages.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 5: Target Users -->
+            <section class="slide" data-slide="4">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >04 — Who Benefits</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Entry-level creators and agile SMBs gain immediate
+                        access to
+                        <span class="text-gradient"
+                            >vetted, long-term partnerships</span
+                        >.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 md:grid-cols-2 gap-6"
+                    >
+                        <div
+                            class="relative overflow-hidden rounded-[32px] p-8 md:p-10 border border-white/5 bg-gradient-to-br from-neutral-900 to-neutral-800/50"
+                        >
+                            <div
+                                class="absolute top-0 right-0 w-40 h-40 bg-lime-400/5 rounded-full blur-[60px]"
+                            ></div>
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div
+                                        class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center"
+                                    >
+                                        <i
+                                            data-lucide="palette"
+                                            class="w-6 h-6 text-purple-400"
+                                        ></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-semibold">
+                                            Emerging Creators
+                                        </div>
+                                        <div
+                                            class="text-[10px] text-neutral-500"
+                                        >
+                                            Gen Z freelancers & recent graduates
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            No portfolio? No problem. AI
+                                            surfaces potential through skill
+                                            assessments and collaboration style.
+                                        </p>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            Chemistry matching pairs you with
+                                            teams where your communication style
+                                            thrives.
+                                        </p>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            First project within days, not
+                                            months—no rating gatekeeping.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-white/5">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex -space-x-2">
+                                            <img
+                                                src="https://picsum.photos/seed/creator1/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            /><img
+                                                src="https://picsum.photos/seed/creator2/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            /><img
+                                                src="https://picsum.photos/seed/creator3/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            />
+                                        </div>
+                                        <span
+                                            class="text-[10px] text-neutral-500"
+                                            >12,400+ creators onboarded in
+                                            beta</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="relative overflow-hidden rounded-[32px] p-8 md:p-10 border border-white/5 bg-gradient-to-br from-neutral-900 to-neutral-800/50"
+                        >
+                            <div
+                                class="absolute top-0 right-0 w-40 h-40 bg-blue-400/5 rounded-full blur-[60px]"
+                            ></div>
+                            <div class="relative z-10">
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div
+                                        class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center"
+                                    >
+                                        <i
+                                            data-lucide="building-2"
+                                            class="w-6 h-6 text-blue-400"
+                                        ></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-semibold">
+                                            Agile SMBs
+                                        </div>
+                                        <div
+                                            class="text-[10px] text-neutral-500"
+                                        >
+                                            Startups & growing teams
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            Receive 5 curated matches instead of
+                                            50 random proposals—quality over
+                                            quantity.
+                                        </p>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            Team compatibility scoring ensures
+                                            freelancers integrate seamlessly
+                                            with your culture.
+                                        </p>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <i
+                                            data-lucide="check-circle-2"
+                                            class="w-4 h-4 text-lime-400 mt-0.5 flex-shrink-0"
+                                        ></i>
+                                        <p
+                                            class="text-xs text-neutral-400 leading-relaxed"
+                                        >
+                                            Retainer-friendly matching builds
+                                            long-term relationships, reducing
+                                            onboarding overhead.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-white/5">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex -space-x-2">
+                                            <img
+                                                src="https://picsum.photos/seed/smb1/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            /><img
+                                                src="https://picsum.photos/seed/smb2/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            /><img
+                                                src="https://picsum.photos/seed/smb3/32/32.jpg"
+                                                class="w-7 h-7 rounded-full border-2 border-neutral-900 object-cover"
+                                                alt=""
+                                            />
+                                        </div>
+                                        <span
+                                            class="text-[10px] text-neutral-500"
+                                            >3,800+ SMBs actively hiring</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 6: Market Size -->
+            <section class="slide" data-slide="5">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >05 — Market Opportunity</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        $1.5T economy, yet
+                        <span class="text-gradient">40% of talent</span> remains
+                        underutilized.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 lg:grid-cols-5 gap-6"
+                    >
+                        <div
+                            class="lg:col-span-2 flex flex-col justify-center items-center p-8 rounded-[32px] border border-white/5 bg-gradient-to-br from-lime-950/30 to-neutral-900"
+                        >
+                            <div
+                                class="text-[72px] md:text-[96px] font-semibold tracking-tighter text-gradient leading-none"
+                            >
+                                $1.5T
+                            </div>
+                            <div
+                                class="text-xs text-neutral-500 tracking-wide mt-2"
+                            >
+                                Global Freelance Economy 2024
+                            </div>
+                            <div
+                                class="mt-6 flex items-center gap-2 text-lime-400"
+                            >
+                                <i data-lucide="trending-up" class="w-4 h-4"></i
+                                ><span class="text-xs font-semibold"
+                                    >Growing 15% YoY</span
+                                >
+                            </div>
+                        </div>
+                        <div
+                            class="lg:col-span-3 rounded-[32px] border border-white/5 bg-neutral-900/50 p-8"
+                        >
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <div class="text-sm font-semibold">
+                                        Talent Utilization Gap
+                                    </div>
+                                    <div class="text-[10px] text-neutral-500">
+                                        By segment, percentage underutilized
+                                    </div>
+                                </div>
+                                <div
+                                    class="px-3 py-1 rounded-lg bg-red-500/10 text-red-400 text-[10px] font-semibold"
+                                >
+                                    Critical Gap
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1.5"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Entry-Level Designers</span
+                                        ><span
+                                            class="font-semibold text-red-400"
+                                            >58%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="58%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1.5"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Junior Developers</span
+                                        ><span
+                                            class="font-semibold text-orange-400"
+                                            >45%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-gradient-to-r from-orange-500 to-orange-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="45%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1.5"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Content Writers</span
+                                        ><span
+                                            class="font-semibold text-yellow-400"
+                                            >42%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-gradient-to-r from-yellow-500 to-yellow-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="42%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1.5"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Marketing Specialists</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >31%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-gradient-to-r from-lime-500 to-lime-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="31%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-1.5"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Senior Consultants</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >18%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-gradient-to-r from-lime-600 to-lime-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="18%"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-5 pt-4 border-t border-white/5 flex items-center gap-2"
+                            >
+                                <i
+                                    data-lucide="info"
+                                    class="w-3 h-3 text-neutral-600"
+                                ></i
+                                ><span class="text-[10px] text-neutral-600"
+                                    >Source: Upwork/Fiverr annual reports,
+                                    McKinsey Global Institute, ILO 2024</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 7: Competitive Moat -->
+            <section class="slide" data-slide="6">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >06 — Competitive Moat</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Incumbents monetize
+                        <span class="line-through text-neutral-600"
+                            >visibility</span
+                        >
+                        while LUMILINK monetizes
+                        <span class="text-gradient"
+                            >successful collaboration</span
+                        >.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 md:grid-cols-3 gap-4"
+                    >
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50 relative overflow-hidden"
+                        >
+                            <div
+                                class="absolute top-4 right-4 px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-[9px] font-bold tracking-wide"
+                            >
+                                LEGACY
+                            </div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-neutral-800 flex items-center justify-center mb-6"
+                            >
+                                <i
+                                    data-lucide="dollar-sign"
+                                    class="w-6 h-6 text-neutral-500"
+                                ></i>
+                            </div>
+                            <h3 class="text-lg font-semibold mb-2">
+                                Pay-to-Play
+                            </h3>
+                            <p
+                                class="text-xs text-neutral-500 leading-relaxed mb-6"
+                            >
+                                Freelancers pay for connects, boosted profiles,
+                                and priority placement. Revenue = attention
+                                extraction.
+                            </p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <i
+                                        data-lucide="x"
+                                        class="w-3 h-3 text-red-400"
+                                    ></i
+                                    ><span class="text-[11px] text-neutral-500"
+                                        >Charges for proposals</span
+                                    >
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i
+                                        data-lucide="x"
+                                        class="w-3 h-3 text-red-400"
+                                    ></i
+                                    ><span class="text-[11px] text-neutral-500"
+                                        >Biased toward spenders</span
+                                    >
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i
+                                        data-lucide="x"
+                                        class="w-3 h-3 text-red-400"
+                                    ></i
+                                    ><span class="text-[11px] text-neutral-500"
+                                        >High churn, low loyalty</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="hidden md:flex flex-col items-center justify-center"
+                        >
+                            <div
+                                class="w-16 h-16 rounded-full border-2 border-white/10 flex items-center justify-center mb-4"
+                            >
+                                <span class="text-xs font-bold text-neutral-500"
+                                    >VS</span
+                                >
+                            </div>
+                            <div
+                                class="w-px h-24 bg-gradient-to-b from-transparent via-lime-400/30 to-transparent"
+                            ></div>
+                        </div>
+                        <div
+                            class="rounded-[32px] p-8 border border-lime-400/20 bg-lime-950/20 relative overflow-hidden md:col-span-1"
+                        >
+                            <div
+                                class="absolute top-0 right-0 w-32 h-32 bg-lime-400/5 rounded-full blur-[40px]"
+                            ></div>
+                            <div
+                                class="absolute top-4 right-4 px-2 py-0.5 rounded bg-lime-400/10 text-lime-400 text-[9px] font-bold tracking-wide"
+                            >
+                                LUMILINK
+                            </div>
+                            <div class="relative z-10">
+                                <div
+                                    class="w-12 h-12 rounded-2xl bg-lime-400/10 flex items-center justify-center mb-6"
+                                >
+                                    <i
+                                        data-lucide="handshake"
+                                        class="w-6 h-6 text-lime-400"
+                                    ></i>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">
+                                    Outcome-Aligned
+                                </h3>
+                                <p
+                                    class="text-xs text-neutral-500 leading-relaxed mb-6"
+                                >
+                                    We only earn when collaborations succeed.
+                                    Revenue = mutual value creation, zero
+                                    extraction.
+                                </p>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Free to connect</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Merit-based matching</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >High retention, deep loyalty</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 8: Business Model -->
+            <section class="slide" data-slide="7">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >07 — Revenue Model</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        A transparent
+                        <span class="text-gradient">8–12% commission</span> on
+                        completed projects eliminates pay-to-message barriers.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 md:grid-cols-2 gap-6"
+                    >
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50"
+                        >
+                            <div class="text-xs font-semibold mb-6">
+                                Commission Structure by Project Value
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Under $1K</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >12%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-3 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-lime-400/80 bar-animate"
+                                            style="width: 0%"
+                                            data-width="80%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >$1K – $5K</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >10%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-3 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-lime-400/60 bar-animate"
+                                            style="width: 0%"
+                                            data-width="66%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >$5K – $25K</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >8%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-3 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-lime-400/40 bar-animate"
+                                            style="width: 0%"
+                                            data-width="53%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >$25K+</span
+                                        ><span
+                                            class="font-semibold text-lime-400"
+                                            >6%</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-3 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-lime-400/25 bar-animate"
+                                            style="width: 0%"
+                                            data-width="40%"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-6 pt-4 border-t border-white/5 text-[10px] text-neutral-600 leading-relaxed"
+                            >
+                                Volume discounts incentivize larger projects and
+                                repeat collaborations, deepening platform
+                                liquidity.
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div
+                                class="rounded-2xl p-6 bg-red-500/5 border border-red-500/10 card-hover"
+                            >
+                                <div class="flex items-center gap-3 mb-3">
+                                    <i
+                                        data-lucide="ban"
+                                        class="w-5 h-5 text-red-400"
+                                    ></i
+                                    ><span
+                                        class="text-sm font-semibold text-red-300"
+                                        >What We Eliminate</span
+                                    >
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="x"
+                                            class="w-3 h-3 text-red-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-500"
+                                            >Connect fees</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="x"
+                                            class="w-3 h-3 text-red-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-500"
+                                            >Profile boosts</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="x"
+                                            class="w-3 h-3 text-red-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-500"
+                                            >Pay-to-message</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="x"
+                                            class="w-3 h-3 text-red-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-500"
+                                            >Subscription walls</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="rounded-2xl p-6 bg-lime-400/5 border border-lime-400/10 card-hover"
+                            >
+                                <div class="flex items-center gap-3 mb-3">
+                                    <i
+                                        data-lucide="check-circle"
+                                        class="w-5 h-5 text-lime-400"
+                                    ></i
+                                    ><span
+                                        class="text-sm font-semibold text-lime-300"
+                                        >What We Deliver</span
+                                    >
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Free matching</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Escrow protection</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Open messaging</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i
+                                            data-lucide="check"
+                                            class="w-3 h-3 text-lime-400/60"
+                                        ></i
+                                        ><span
+                                            class="text-[11px] text-neutral-400"
+                                            >Pay only on success</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="rounded-2xl p-5 bg-white/5 border border-white/5"
+                            >
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="text-2xl font-semibold tracking-tighter text-gradient"
+                                    >
+                                        0%
+                                    </div>
+                                    <div
+                                        class="text-[10px] text-neutral-500 leading-relaxed"
+                                    >
+                                        Upfront cost for freelancers.<br />Zero
+                                        risk to start collaborating.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 9: Growth Flywheel -->
+            <section class="slide" data-slide="8">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >08 — Growth Engine</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Volume-driven transaction fees scale naturally as
+                        <span class="text-gradient"
+                            >repeat collaborations compound</span
+                        >
+                        platform liquidity.
+                    </h2>
+                    <div
+                        class="stagger-3 flex flex-col lg:flex-row items-center gap-8"
+                    >
+                        <div
+                            class="relative w-[320px] h-[320px] md:w-[400px] md:h-[400px] flex-shrink-0"
+                        >
+                            <svg viewBox="0 0 400 400" class="w-full h-full">
+                                <defs>
+                                    <linearGradient
+                                        id="flyGrad"
+                                        x1="0%"
+                                        y1="0%"
+                                        x2="100%"
+                                        y2="100%"
+                                    >
+                                        <stop
+                                            offset="0%"
+                                            style="
+                                                stop-color: #a3e635;
+                                                stop-opacity: 0.8;
+                                            "
+                                        />
+                                        <stop
+                                            offset="100%"
+                                            style="
+                                                stop-color: #84cc16;
+                                                stop-opacity: 0.2;
+                                            "
+                                        />
+                                    </linearGradient>
+                                    <marker
+                                        id="arrowhead"
+                                        markerWidth="6"
+                                        markerHeight="6"
+                                        refX="5"
+                                        refY="3"
+                                        orient="auto"
+                                    >
+                                        <polygon
+                                            points="0 0, 6 3, 0 6"
+                                            fill="rgba(163,230,53,0.5)"
+                                        />
+                                    </marker>
+                                </defs>
+                                <circle
+                                    cx="200"
+                                    cy="200"
+                                    r="170"
+                                    fill="none"
+                                    stroke="rgba(163,230,53,0.08)"
+                                    stroke-width="40"
+                                />
+                                <circle
+                                    cx="200"
+                                    cy="200"
+                                    r="170"
+                                    fill="none"
+                                    stroke="url(#flyGrad)"
+                                    stroke-width="2"
+                                    stroke-dasharray="20 10"
+                                    class="spin-slow"
+                                    style="transform-origin: center"
+                                />
+                                <g>
+                                    <circle
+                                        cx="200"
+                                        cy="30"
+                                        r="28"
+                                        fill="#171717"
+                                        stroke="#a3e635"
+                                        stroke-width="1.5"
+                                    />
+                                    <text
+                                        x="200"
+                                        y="34"
+                                        text-anchor="middle"
+                                        fill="#a3e635"
+                                        font-size="10"
+                                        font-weight="600"
+                                    >
+                                        MATCH
+                                    </text>
+                                </g>
+                                <g>
+                                    <circle
+                                        cx="370"
+                                        cy="200"
+                                        r="28"
+                                        fill="#171717"
+                                        stroke="#a3e635"
+                                        stroke-width="1.5"
+                                    />
+                                    <text
+                                        x="370"
+                                        y="204"
+                                        text-anchor="middle"
+                                        fill="#a3e635"
+                                        font-size="10"
+                                        font-weight="600"
+                                    >
+                                        WORK
+                                    </text>
+                                </g>
+                                <g>
+                                    <circle
+                                        cx="200"
+                                        cy="370"
+                                        r="28"
+                                        fill="#171717"
+                                        stroke="#a3e635"
+                                        stroke-width="1.5"
+                                    />
+                                    <text
+                                        x="200"
+                                        y="374"
+                                        text-anchor="middle"
+                                        fill="#a3e635"
+                                        font-size="10"
+                                        font-weight="600"
+                                    >
+                                        EARN
+                                    </text>
+                                </g>
+                                <g>
+                                    <circle
+                                        cx="30"
+                                        cy="200"
+                                        r="28"
+                                        fill="#171717"
+                                        stroke="#a3e635"
+                                        stroke-width="1.5"
+                                    />
+                                    <text
+                                        x="30"
+                                        y="204"
+                                        text-anchor="middle"
+                                        fill="#a3e635"
+                                        font-size="10"
+                                        font-weight="600"
+                                    >
+                                        REFER
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 230 50 A 180 180 0 0 1 350 170"
+                                    fill="none"
+                                    stroke="rgba(163,230,53,0.3)"
+                                    stroke-width="1.5"
+                                    marker-end="url(#arrowhead)"
+                                />
+                                <path
+                                    d="M 350 230 A 180 180 0 0 1 230 350"
+                                    fill="none"
+                                    stroke="rgba(163,230,53,0.3)"
+                                    stroke-width="1.5"
+                                    marker-end="url(#arrowhead)"
+                                />
+                                <path
+                                    d="M 170 350 A 180 180 0 0 1 50 230"
+                                    fill="none"
+                                    stroke="rgba(163,230,53,0.3)"
+                                    stroke-width="1.5"
+                                    marker-end="url(#arrowhead)"
+                                />
+                                <path
+                                    d="M 50 170 A 180 180 0 0 1 170 50"
+                                    fill="none"
+                                    stroke="rgba(163,230,53,0.3)"
+                                    stroke-width="1.5"
+                                    marker-end="url(#arrowhead)"
+                                />
+                                <circle
+                                    cx="200"
+                                    cy="200"
+                                    r="60"
+                                    fill="#0a0a0a"
+                                    stroke="rgba(163,230,53,0.15)"
+                                    stroke-width="1"
+                                />
+                                <text
+                                    x="200"
+                                    y="195"
+                                    text-anchor="middle"
+                                    fill="#a3e635"
+                                    font-size="11"
+                                    font-weight="700"
+                                >
+                                    FLYWHEEL
+                                </text>
+                                <text
+                                    x="200"
+                                    y="212"
+                                    text-anchor="middle"
+                                    fill="rgba(255,255,255,0.3)"
+                                    font-size="8"
+                                >
+                                    Compounding Growth
+                                </text>
+                            </svg>
+                        </div>
+                        <div class="space-y-4 flex-1">
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 text-lime-400 font-bold text-xs"
+                                >
+                                    01
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Quality Matches → Higher Completion
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        AI precision means 78% project
+                                        completion rate vs. industry 42%,
+                                        generating more commission volume per
+                                        match.
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 text-lime-400 font-bold text-xs"
+                                >
+                                    02
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Great Experience → Repeat Projects
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        63% of matched pairs start a second
+                                        project within 90 days—each generating
+                                        fresh commission with zero CAC.
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start card-hover p-4 rounded-xl"
+                            >
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-lime-400/10 flex items-center justify-center flex-shrink-0 text-lime-400 font-bold text-xs"
+                                >
+                                    03
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold mb-1">
+                                        Network Density → Better Matches
+                                    </h3>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        More interactions train the matching
+                                        model, improving outcomes in a
+                                        self-reinforcing data loop competitors
+                                        can't replicate.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 10: Viral Growth -->
+            <section class="slide" data-slide="9">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >09 — Viral Mechanics</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Viral referral loops and gamified onboarding convert Gen
+                        Z creators into
+                        <span class="text-gradient">organic growth engines</span
+                        >.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 md:grid-cols-3 gap-4"
+                    >
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50 card-hover"
+                        >
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-6 float-anim"
+                            >
+                                <i
+                                    data-lucide="gamepad-2"
+                                    class="w-6 h-6 text-purple-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Gamified Onboarding
+                            </h3>
+                            <p
+                                class="text-xs text-neutral-500 leading-relaxed mb-4"
+                            >
+                                Complete skill challenges, earn chemistry
+                                badges, and unlock match tiers through
+                                interactive quests—not tedious profiles.
+                            </p>
+                            <div class="flex gap-2">
+                                <span
+                                    class="px-2 py-0.5 bg-purple-400/10 text-purple-400 rounded text-[9px] font-medium"
+                                    >Quests</span
+                                ><span
+                                    class="px-2 py-0.5 bg-pink-400/10 text-pink-400 rounded text-[9px] font-medium"
+                                    >Badges</span
+                                ><span
+                                    class="px-2 py-0.5 bg-blue-400/10 text-blue-400 rounded text-[9px] font-medium"
+                                    >Streaks</span
+                                >
+                            </div>
+                        </div>
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50 card-hover"
+                        >
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500/20 to-teal-500/20 flex items-center justify-center mb-6 float-anim-delay"
+                            >
+                                <i
+                                    data-lucide="share-2"
+                                    class="w-6 h-6 text-lime-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Dual-Sided Referrals
+                            </h3>
+                            <p
+                                class="text-xs text-neutral-500 leading-relaxed mb-4"
+                            >
+                                Invite a freelancer and a client: when they
+                                match, both earn platform credits. 2-sided
+                                incentive = 3.2x viral coefficient.
+                            </p>
+                            <div class="flex gap-2">
+                                <span
+                                    class="px-2 py-0.5 bg-lime-400/10 text-lime-400 rounded text-[9px] font-medium"
+                                    >$25 Credit</span
+                                ><span
+                                    class="px-2 py-0.5 bg-teal-400/10 text-teal-400 rounded text-[9px] font-medium"
+                                    >K-factor 3.2</span
+                                >
+                            </div>
+                        </div>
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50 card-hover"
+                        >
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-6 float-anim"
+                            >
+                                <i
+                                    data-lucide="trophy"
+                                    class="w-6 h-6 text-amber-400"
+                                ></i>
+                            </div>
+                            <h3 class="text-sm font-semibold mb-2">
+                                Collaboration Showcases
+                            </h3>
+                            <p
+                                class="text-xs text-neutral-500 leading-relaxed mb-4"
+                            >
+                                Auto-generated project stories become shareable
+                                social proof. Creators organically amplify their
+                                LUMILINK success.
+                            </p>
+                            <div class="flex gap-2">
+                                <span
+                                    class="px-2 py-0.5 bg-amber-400/10 text-amber-400 rounded text-[9px] font-medium"
+                                    >Stories</span
+                                ><span
+                                    class="px-2 py-0.5 bg-orange-400/10 text-orange-400 rounded text-[9px] font-medium"
+                                    >Social Share</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="stagger-4 mt-6 flex items-center gap-6 text-neutral-600"
+                    >
+                        <div class="flex items-center gap-2">
+                            <i
+                                data-lucide="users"
+                                class="w-4 h-4 text-lime-400/50"
+                            ></i
+                            ><span class="text-xs"
+                                >Projected: 40% of new users via referral by
+                                Month 12</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 11: B2B Expansion -->
+            <section class="slide" data-slide="10">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >10 — Expansion Strategy</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Expanding into agency workflows and enterprise API
+                        integrations unlocks
+                        <span class="text-gradient">B2B network effects</span>.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 lg:grid-cols-2 gap-6"
+                    >
+                        <div class="space-y-0">
+                            <div class="flex gap-4 items-start">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-lime-400/20 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="text-xs font-bold text-lime-400"
+                                            >P1</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="w-px h-16 bg-gradient-to-b from-lime-400/30 to-transparent"
+                                    ></div>
+                                </div>
+                                <div class="pt-2">
+                                    <div
+                                        class="text-xs font-semibold text-lime-400 mb-1"
+                                    >
+                                        Now — Core Marketplace
+                                    </div>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Individual matching engine with
+                                        swipe-based discovery. Prove
+                                        product-market fit with freelancers and
+                                        SMBs.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-blue-400/20 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="text-xs font-bold text-blue-400"
+                                            >P2</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="w-px h-16 bg-gradient-to-b from-blue-400/30 to-transparent"
+                                    ></div>
+                                </div>
+                                <div class="pt-2">
+                                    <div
+                                        class="text-xs font-semibold text-blue-400 mb-1"
+                                    >
+                                        Month 9 — Agency Workflows
+                                    </div>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Team-based matching for creative
+                                        agencies. Bench management, project
+                                        staffing, and cross-agency collaboration
+                                        tools.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="flex flex-col items-center">
+                                    <div
+                                        class="w-10 h-10 rounded-xl bg-purple-400/20 flex items-center justify-center"
+                                    >
+                                        <span
+                                            class="text-xs font-bold text-purple-400"
+                                            >P3</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="pt-2">
+                                    <div
+                                        class="text-xs font-semibold text-purple-400 mb-1"
+                                    >
+                                        Month 18 — Enterprise API
+                                    </div>
+                                    <p
+                                        class="text-xs text-neutral-500 leading-relaxed"
+                                    >
+                                        Embed LUMILINK's matching intelligence
+                                        into HR platforms, ATS systems, and
+                                        procurement workflows via API.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="rounded-[32px] p-8 border border-white/5 bg-neutral-900/50"
+                        >
+                            <div class="text-xs font-semibold mb-6">
+                                Total Addressable Market Expansion
+                            </div>
+                            <div class="space-y-5">
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >Freelance Marketplace (P1)</span
+                                        ><span class="font-semibold"
+                                            >$1.5T</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2.5 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-lime-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="50%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >+ Agency Staffing (P2)</span
+                                        ><span class="font-semibold"
+                                            >$2.8T</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2.5 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-blue-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="70%"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="flex justify-between text-xs mb-2"
+                                    >
+                                        <span class="text-neutral-400"
+                                            >+ Enterprise HR API (P3)</span
+                                        ><span class="font-semibold"
+                                            >$4.4T</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="h-2.5 rounded-full bg-neutral-800 overflow-hidden"
+                                    >
+                                        <div
+                                            class="h-full rounded-full bg-purple-400 bar-animate"
+                                            style="width: 0%"
+                                            data-width="100%"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-white/5">
+                                <div class="flex items-center gap-2">
+                                    <i
+                                        data-lucide="layers"
+                                        class="w-3 h-3 text-lime-400"
+                                    ></i
+                                    ><span class="text-[10px] text-neutral-500"
+                                        >Each phase unlocks new network effects
+                                        that strengthen the core
+                                        marketplace.</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SLIDE 12: Unit Economics -->
+            <section class="slide" data-slide="11">
+                <div
+                    class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"
+                >
+                    <div class="mb-4 stagger-1">
+                        <span
+                            class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400"
+                            >11 — Financial Viability</span
+                        >
+                    </div>
+                    <h2
+                        class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-10 max-w-4xl"
+                    >
+                        Rewarding actual work, not visibility, yields
+                        <span class="text-gradient"
+                            >profitability by month 18</span
+                        >.
+                    </h2>
+                    <div
+                        class="stagger-3 grid grid-cols-1 lg:grid-cols-3 gap-6"
+                    >
+                        <div class="space-y-4">
+                            <div
+                                class="rounded-2xl p-6 bg-lime-950/20 border border-lime-400/10"
+                            >
+                                <div
+                                    class="text-3xl font-semibold tracking-tighter text-gradient mb-1"
+                                >
+                                    M18
+                                </div>
+                                <div class="text-xs text-neutral-500">
+                                    Profitability Target
+                                </div>
+                            </div>
+                            <div
+                                class="rounded-2xl p-6 bg-white/5 border border-white/5"
+                            >
+                                <div
+                                    class="text-3xl font-semibold tracking-tighter mb-1"
+                                >
+                                    $24
+                                </div>
+                                <div class="text-xs text-neutral-500">
+                                    Avg. Commission per Project
+                                </div>
+                            </div>
+                            <div
+                                class="rounded-2xl p-6 bg-white/5 border border-white/5"
+                            >
+                                <div
+                                    class="text-3xl font-semibold tracking-tighter mb-1"
+                                >
+                                    $8.50
+                                </div>
+                                <div class="text-xs text-neutral-500">
+                                    CAC (Blended)
+                                </div>
+                            </div>
+                            <div
+                                class="rounded-2xl p-6 bg-white/5 border border-white/5"
+                            >
+                                <div
+                                    class="text-3xl font-semibold tracking-tighter mb-1"
+                                >
+                                    2.8x
+                                </div>
+                                <div class="text-xs text-neutral-500">
+                                    LTV/CAC Ratio at M18
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="lg:col-span-2 rounded-[32px] p-8 border border-white/5 bg-neutral-900/50"
+                        >
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <div class="text-xs font-semibold">
+                                        Revenue vs. Cost Trajectory
+                                    </div>
+                                    <div class="text-[10px] text-neutral-500">
+                                        Conservative estimates (thousands USD)
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center gap-1.5">
+                                        <div
+                                            class="w-3 h-1.5 rounded bg-lime-400"
+                                        ></div>
+                                        <span
+                                            class="text-[10px] text-neutral-500"
+                                            >Revenue</span
+                                        >
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <div
+                                            class="w-3 h-1.5 rounded bg-neutral-600"
+                                        ></div>
+                                        <span
+                                            class="text-[10px] text-neutral-500"
+                                            >Cost</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative h-48 flex items-end gap-2">
+                                <div
+                                    class="absolute left-0 top-0 bottom-0 w-8 flex flex-col justify-between text-[9px] text-neutral-600"
+                                >
+                                    <span>$200K</span><span>$150K</span
+                                    ><span>$100K</span><span>$50K</span
+                                    ><span>$0</span>
+                                </div>
+                                <div
+                                    class="ml-10 flex-1 flex items-end gap-1.5 h-full"
+                                >
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400/30 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="8%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="20%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M3</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400/40 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="18%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="30%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M6</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400/50 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="35%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="42%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M9</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400/60 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="55%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="52%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M12</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400/75 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="75%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="60%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M15</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1 relative"
+                                    >
+                                        <div
+                                            class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-lime-400/10 text-lime-400 text-[8px] font-bold rounded whitespace-nowrap"
+                                        >
+                                            Breakeven ✓
+                                        </div>
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="92%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="68%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-lime-400 font-bold"
+                                            >M18</span
+                                        >
+                                    </div>
+                                    <div
+                                        class="flex-1 flex flex-col items-center gap-1"
+                                    >
+                                        <div
+                                            class="w-full flex gap-0.5 items-end h-40"
+                                        >
+                                            <div
+                                                class="flex-1 bg-lime-400 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="100%"
+                                            ></div>
+                                            <div
+                                                class="flex-1 bg-neutral-700 rounded-t bar-animate"
+                                                style="height: 0%"
+                                                data-height="75%"
+                                            ></div>
+                                        </div>
+                                        <span
+                                            class="text-[8px] text-neutral-600"
+                                            >M24</span
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-4 pt-4 border-t border-white/5 flex items-center gap-4 flex-wrap"
+                            >
+                                <div class="flex items-center gap-1.5">
+                                    <i
+                                        data-lucide="calculator"
+                                        class="w-3 h-3 text-neutral-600"
+                                    ></i
+                                    ><span class="text-[10px] text-neutral-500"
+                                        >Based on 10% avg. commission, $240 avg.
+                                        project value, 40% MoM user growth</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navigation Controls -->
+        <nav
+            id="bottomNav"
+            class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/10 bg-neutral-900/90"
+            style="backdrop-filter: blur(12px)"
+        >
+            <button
+                onclick="prevSlide()"
+                class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div class="flex gap-1.5" id="bottomDots"></div>
+            <button
+                onclick="nextSlide()"
+                class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Progress Bar -->
+        <div class="fixed bottom-0 left-0 right-0 h-0.5 bg-neutral-800 z-[100]">
+            <div
+                class="h-full bg-lime-400 transition-all duration-500 ease-out"
+                id="progressBar"
+                style="width: 8.33%"
+            ></div>
+        </div>
+
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            lucide.createIcons();
+
+            let currentSlide = 0;
+            const totalSlides = 12;
+            let isAnimating = false;
+
+            const topDotsContainer = document.getElementById("navDots");
+            const bottomDotsContainer = document.getElementById("bottomDots");
+
+            // Create navigation dots
+            for (let i = 0; i < totalSlides; i++) {
+                const topDot = document.createElement("button");
+                topDot.className = `nav-dot w-2 h-2 rounded-full bg-white/20 ${i === 0 ? "active" : ""}`;
+                topDot.onclick = () => goToSlide(i);
+                topDotsContainer.appendChild(topDot);
+
+                const bottomDot = document.createElement("button");
+                bottomDot.className = `nav-dot w-2 h-2 rounded-full bg-white/20 ${i === 0 ? "active" : ""}`;
+                bottomDot.onclick = () => goToSlide(i);
+                bottomDotsContainer.appendChild(bottomDot);
+            }
+
+            function updateSlide(newIndex, direction = "next") {
+                if (
+                    newIndex < 0 ||
+                    newIndex >= totalSlides ||
+                    newIndex === currentSlide
+                )
+                    return;
+
+                // Force unlock animation if explicitly called, but prevent rapid double-fires
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const slides = document.querySelectorAll(".slide");
+                const oldSlide = slides[currentSlide];
+                const newSlide = slides[newIndex];
+
+                oldSlide.classList.remove("active");
+                if (direction === "next") oldSlide.classList.add("exit-up");
+
+                newSlide.style.transform =
+                    direction === "next"
+                        ? "translateY(30px) scale(0.98)"
+                        : "translateY(-30px) scale(0.98)";
+                requestAnimationFrame(() => {
+                    newSlide.classList.add("active");
+                });
+
+                currentSlide = newIndex;
+
+                document.getElementById("currentSlide").textContent = String(
+                    currentSlide + 1,
+                ).padStart(2, "0");
+                document.getElementById("progressBar").style.width =
+                    `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+                document.querySelectorAll(".nav-dot").forEach((dot, i) => {
+                    dot.classList.toggle("active", i === currentSlide);
+                });
+
+                setTimeout(() => triggerBarAnimations(newSlide), 300);
+
+                // Unlock animation state slightly after CSS finishes
+                setTimeout(() => {
+                    const prevSlideEl =
+                        slides[newIndex === 0 ? totalSlides - 1 : newIndex - 1]; // just clear old class
+                    oldSlide.classList.remove("exit-up");
+                    isAnimating = false;
+                }, 650);
+            }
+
+            function nextSlide() {
+                updateSlide(currentSlide + 1, "next");
+            }
+            function prevSlide() {
+                updateSlide(currentSlide - 1, "prev");
+            }
+            function goToSlide(i) {
+                updateSlide(i, i > currentSlide ? "next" : "prev");
+            }
+
+            // Make globally accessible for inline onclick
+            window.nextSlide = nextSlide;
+            window.prevSlide = prevSlide;
+            window.goToSlide = goToSlide;
+
+            // Keyboard navigation
+            document.addEventListener("keydown", (e) => {
+                if (
+                    e.key === "ArrowRight" ||
+                    e.key === "ArrowDown" ||
+                    e.key === " "
+                ) {
+                    e.preventDefault();
+                    nextSlide();
+                }
+                if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                    e.preventDefault();
+                    prevSlide();
+                }
+                if (e.key === "Home") {
+                    e.preventDefault();
+                    goToSlide(0);
+                }
+                if (e.key === "End") {
+                    e.preventDefault();
+                    goToSlide(totalSlides - 1);
+                }
+            });
+
+            // Touch/swipe support
+            let touchStartX = 0,
+                touchStartY = 0;
+            document.addEventListener("touchstart", (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            });
+            document.addEventListener("touchend", (e) => {
+                const dx = e.changedTouches[0].screenX - touchStartX;
+                const dy = e.changedTouches[0].screenY - touchStartY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+                    dx < 0 ? nextSlide() : prevSlide();
+                } else if (Math.abs(dy) > 50) {
+                    dy < 0 ? nextSlide() : prevSlide();
+                }
+            });
+
+            // Mouse wheel support - Strictly ignores the bottom navigation area
+            let lastWheelTime = 0;
+            const bottomNav = document.getElementById("bottomNav");
+
+            window.addEventListener(
+                "wheel",
+                (e) => {
+                    // If scrolling over the bottom nav, do NOT change slides
+                    if (bottomNav.contains(e.target)) return;
+
+                    e.preventDefault();
+                    const now = Date.now();
+                    if (now - lastWheelTime < 800) return; // Debounce smooth-scroll mice
+                    lastWheelTime = now;
+
+                    if (e.deltaY > 0) nextSlide();
+                    else if (e.deltaY < 0) prevSlide();
+                },
+                { passive: false },
+            );
+
+            // Animate data bars inside slides
+            function triggerBarAnimations(slide) {
+                const bars = slide.querySelectorAll("[data-width]");
+                bars.forEach((bar, i) => {
+                    setTimeout(() => {
+                        bar.style.width = bar.dataset.width;
+                    }, i * 100);
+                });
+                const heights = slide.querySelectorAll("[data-height]");
+                heights.forEach((bar, i) => {
+                    setTimeout(() => {
+                        bar.style.height = bar.dataset.height;
+                    }, i * 80);
+                });
+            }
+
+            // Initialize first slide animations
+            triggerBarAnimations(document.querySelectorAll(".slide")[0]);
+        </script>
+    </body>
+</html>
