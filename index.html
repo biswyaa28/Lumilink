@@ -26,6 +26,7 @@ tailwind.config = {
 
   .slide {
     position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    padding-top: 72px; padding-bottom: 86px;
     opacity: 0; transform: scale(0.96) translateY(20px); filter: blur(4px); pointer-events: none;
     transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), filter 0.85s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -116,11 +117,15 @@ tailwind.config = {
     <div class="w-8 h-8 bg-lime-400 rounded-lg flex items-center justify-center"><i data-lucide="zap" class="w-4 h-4 text-neutral-900"></i></div><span class="text-sm font-semibold tracking-tight">LUMILINK</span>
   </div>
   <div class="flex items-center gap-4">
-    <span class="slide-number text-xs text-neutral-500 tracking-widest"><span id="currentSlide">01</span> / 14</span>
+    <span class="slide-number text-xs text-neutral-500 tracking-widest"><span id="currentSlide">01</span> / 15</span>
     <div class="flex gap-1.5" id="navDots"></div>
     <button onclick="toggleTheme()" class="nav-btn w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center select-none" title="Toggle Light/Dark Mode">
       <i data-lucide="sun" class="w-4 h-4 theme-icon-light"></i>
       <i data-lucide="moon" class="w-4 h-4 theme-icon-dark"></i>
+    </button>
+    <button onclick="toggleFullscreen()" class="nav-btn w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center select-none" title="Toggle Fullscreen">
+      <i data-lucide="maximize-2" class="w-4 h-4 fs-expand"></i>
+      <i data-lucide="minimize-2" class="w-4 h-4 fs-shrink" style="display:none;"></i>
     </button>
   </div>
 </header>
@@ -129,7 +134,7 @@ tailwind.config = {
 
   <!-- SLIDE 1: Cover -->
   <section class="slide active" data-slide="0">
-    <div class="flex flex-col items-center justify-center h-full px-6 text-center relative"><div class="absolute inset-0 dot-pattern opacity-30"></div><div class="relative z-10 max-w-5xl mx-auto"><div class="stagger-1 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8"><span class="w-2 h-2 rounded-full bg-lime-400 glow-pulse"></span><span class="text-[10px] font-semibold tracking-[0.15em] uppercase text-neutral-400">Bulletproofed Pitch · July 2025</span></div><h1 class="stagger-2 text-5xl md:text-7xl lg:text-[96px] font-semibold tracking-tighter leading-[0.9] mb-6"><span class="text-gradient">LUMI</span><span class="text-gradient-light">LINK</span></h1><p class="stagger-3 text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-6">Matchmaking for Businesses & Freelancers.<br>Every critique addressed. Every number defended.</p><div class="stagger-4 text-sm text-neutral-500 space-y-1"><div>Neel Prabir Singh · <a href="mailto:neelpksingh@gmail.com" class="text-lime-400 hover:underline">neelpksingh@gmail.com</a> · +91 9773985594</div><div>Biswajeet Rout · <a href="mailto:biswyaa@gmail.com" class="text-blue-400 hover:underline">biswyaa@gmail.com</a> · +91 7045095070</div></div><div class="stagger-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none opacity-20"><svg viewBox="0 0 500 500" class="spin-slow"><circle cx="250" cy="250" r="200" fill="none" stroke="url(#grad1)" stroke-width="0.5" stroke-dasharray="8 12"/><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#a3e635;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#a3e635;stop-opacity:0"/></linearGradient></defs></svg></div></div></div>
+    <div class="flex flex-col items-center justify-center h-full px-6 text-center relative"><div class="absolute inset-0 dot-pattern opacity-30"></div><div class="relative z-10 max-w-5xl mx-auto"><div class="stagger-1 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 mb-8"><span class="w-2 h-2 rounded-full bg-lime-400 glow-pulse"></span><span class="text-[10px] font-semibold tracking-[0.15em] uppercase text-neutral-400">Bulletproofed Pitch · May 2026</span></div><h1 class="stagger-2 text-5xl md:text-7xl lg:text-[96px] font-semibold tracking-tighter leading-[0.9] mb-6"><span class="text-gradient">LUMI</span><span class="text-gradient-light">LINK</span></h1><p class="stagger-3 text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-6">Matchmaking for Businesses & Freelancers.<br>Every critique addressed. Every number defended.</p><div class="stagger-4 text-sm text-neutral-500 space-y-1"><div>Neel Prabir Singh · <a href="mailto:neelpksingh@gmail.com" class="text-lime-400 hover:underline">neelpksingh@gmail.com</a> · +91 9773985594</div><div>Biswajeet Rout · <a href="mailto:biswyaa@gmail.com" class="text-blue-400 hover:underline">biswyaa@gmail.com</a> · +91 7045095070</div><div>Saish Bhujbal · <a href="mailto:2025.saishb@isu.ac.in" class="text-purple-400 hover:underline">2025.saishb@isu.ac.in</a> · +91 90229 17574</div><div>Manthan Shirke · <a href="mailto:2025.mathans@isu.ac.in" class="text-lime-400 hover:underline">2025.mathans@isu.ac.in</a> · +91 83697 12446</div></div><div class="stagger-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none opacity-20"><svg viewBox="0 0 500 500" class="spin-slow"><circle cx="250" cy="250" r="200" fill="none" stroke="url(#grad1)" stroke-width="0.5" stroke-dasharray="8 12"/><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#a3e635;stop-opacity:0.6"/><stop offset="100%" style="stop-color:#a3e635;stop-opacity:0"/></linearGradient></defs></svg></div></div></div>
   </section>
 
   <!-- SLIDE 2: Problem -->
@@ -172,7 +177,96 @@ tailwind.config = {
     <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"><div class="mb-4 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">08 — Go-To-Market</span></div><h2 class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-8 max-w-4xl">Concierge → closed beta → community → paid. <span class="text-gradient">Validate manually, then automate.</span></h2><div class="stagger-3 grid grid-cols-1 md:grid-cols-2 gap-4"><div class="rounded-2xl p-6 bg-white/5 border border-white/5 card-hover"><div class="text-[10px] font-bold tracking-widest text-lime-400 mb-2">P0 · MO 0-2 · Concierge MVP</div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Manual matching via <span class="text-neutral-300">Telegram + spreadsheet. Zero code.</span> Founder personally vets 30 freelancers + recruits 30 startup clients.</p><div class="text-[10px] font-semibold text-lime-400/80">Goal: 10 paid projects at standard take rate.</div></div><div class="rounded-2xl p-6 bg-white/5 border border-white/5 card-hover"><div class="text-[10px] font-bold tracking-widest text-blue-400 mb-2">P1 · MO 3-6 · Closed Beta</div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Invite-only. 200 vetted freelancers + 50 paying clients. Pitch to <span class="text-neutral-300">100x VC, Antler, Lightspeed portfolios</span> with 'free first hire' offer.</p><div class="text-[10px] font-semibold text-blue-400/80">Goal: 80% match→hire rate. ₹15L GMV.</div></div><div class="rounded-2xl p-6 bg-white/5 border border-white/5 card-hover"><div class="text-[10px] font-bold tracking-widest text-purple-400 mb-2">P2 · MO 7-12 · Community Growth</div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Open registration. ₹500/successful hire referral. Design community partnerships: <span class="text-neutral-300">Dribbble India, Behance meetups, design schools</span>.</p><div class="text-[10px] font-semibold text-purple-400/80">Goal: 2K freelancers, 500 clients, ₹2.5 Cr GMV.</div></div><div class="rounded-2xl p-6 bg-white/5 border border-white/5 card-hover"><div class="text-[10px] font-bold tracking-widest text-amber-400 mb-2">P3 · YEAR 2+ · Paid + Expansion</div><p class="text-xs text-neutral-500 leading-relaxed mb-2"><span class="text-neutral-300">CAC-aware, LTV-justified</span> paid acquisition. Add writing + video verticals. Geo-expand to <span class="text-neutral-300">SEA (Indonesia, Philippines)</span>.</p><div class="text-[10px] font-semibold text-amber-400/80">Goal: 10K+ freelancers, ₹48 Cr GMV.</div></div></div><div class="stagger-4 mt-4 flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5 text-xs text-neutral-400"><i data-lucide="flask-conical" class="w-4 h-4 text-lime-400 flex-shrink-0"></i><span><span class="text-white font-semibold">Validation:</span> 6 experiments in 8 weeks. Kill criteria: <3/6 hit signal.</span></div></div>
   </section>
 
-  <!-- SLIDE 10: Validation Plan -->
+  <!-- SLIDE 10: GTM Channels & Flywheel -->
+  <section class="slide" data-slide="9b">
+    <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto">
+      <div class="mb-2 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">09 — Acquisition Engine</span></div>
+      <h2 class="stagger-2 text-2xl md:text-4xl lg:text-[44px] font-medium tracking-tighter leading-[0.95] mb-4 max-w-3xl">Two-sided channels. <span class="text-gradient">One compounding flywheel.</span></h2>
+      <div class="stagger-3 grid grid-cols-1 lg:grid-cols-2 gap-5 items-center">
+        <div class="space-y-3">
+          <div class="rounded-2xl p-4 bg-purple-500/5 border border-purple-400/15">
+            <div class="flex items-center justify-between mb-2.5">
+              <div class="text-[10px] font-bold tracking-widest text-purple-400">SUPPLY — CREATIVES</div>
+              <div class="text-xs font-semibold text-purple-300">CAC ₹2,000</div>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-purple-400 flex-shrink-0"></span>Design communities (Dribbble India, Behance)</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">High intent</span></div>
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-purple-400/60 flex-shrink-0"></span>Design schools + campus ambassador program</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">Low CAC</span></div>
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-purple-400/35 flex-shrink-0"></span>LinkedIn content + freelance case studies</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">Organic</span></div>
+            </div>
+          </div>
+          <div class="rounded-2xl p-4 bg-blue-500/5 border border-blue-400/15">
+            <div class="flex items-center justify-between mb-2.5">
+              <div class="text-[10px] font-bold tracking-widest text-blue-400">DEMAND — STARTUPS</div>
+              <div class="text-xs font-semibold text-blue-300">CAC ₹4,000</div>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0"></span>Accelerator portfolios (100x, Antler, Lightspeed)</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">B2B direct</span></div>
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-blue-400/60 flex-shrink-0"></span>VC partner intros + "free first hire" offer</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">High LTV</span></div>
+              <div class="flex items-center justify-between text-xs"><div class="flex gap-2 items-center"><span class="w-1.5 h-1.5 rounded-full bg-blue-400/35 flex-shrink-0"></span>Founder Slacks, ProductHunt, IndiaHacks</div><span class="text-[10px] text-neutral-500 flex-shrink-0 ml-2">Community</span></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-3 rounded-xl bg-lime-950/20 border border-lime-400/10 text-xs">
+            <i data-lucide="repeat-2" class="w-4 h-4 text-lime-400 flex-shrink-0"></i>
+            <span class="text-neutral-400"><span class="text-white font-semibold">₹500 referral</span> per successful hire — self-funding growth loop from commission day 1. LTV:CAC stays at <span class="text-lime-400 font-semibold">15x</span>.</span>
+          </div>
+        </div>
+        <div class="flex justify-center items-center">
+          <svg viewBox="0 0 380 300" class="w-full" style="max-height:248px;">
+            <defs>
+              <filter id="fw-glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="fw-glow-sm"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <radialGradient id="fw-bg" cx="50%" cy="50%"><stop offset="0%" stop-color="#a3e635" stop-opacity="0.07"/><stop offset="100%" stop-color="#a3e635" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="190" cy="150" rx="115" ry="90" fill="url(#fw-bg)"/>
+            <!-- Orbit ring -->
+            <circle cx="190" cy="150" r="105" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.5"/>
+            <!-- Connection lines between nodes (trimmed to node edges, r=24, unit offset=17) -->
+            <!-- N1(190,45)→N2(295,150): 45° diagonal, unit=(0.707,0.707) offset=17 -->
+            <line x1="202" y1="57" x2="283" y2="138" stroke="rgba(163,230,53,0.22)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- N2(295,150)→N3(190,255): unit=(-0.707,0.707) -->
+            <line x1="283" y1="162" x2="202" y2="243" stroke="rgba(59,130,246,0.22)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- N3(190,255)→N4(85,150): unit=(-0.707,-0.707) -->
+            <line x1="178" y1="243" x2="97" y2="162" stroke="rgba(245,158,11,0.22)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- N4(85,150)→N1(190,45): unit=(0.707,-0.707) -->
+            <line x1="97" y1="138" x2="178" y2="57" stroke="rgba(99,102,241,0.22)" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- Animated flow particles (clockwise: N1→N2→N3→N4→N1) -->
+            <circle r="3.2" fill="#a3e635"><animateMotion dur="1.9s" repeatCount="indefinite" path="M190,45 L295,150"/><animate attributeName="opacity" values="0;1;0" dur="1.9s" repeatCount="indefinite"/></circle>
+            <circle r="3.2" fill="#3b82f6"><animateMotion dur="1.9s" begin="0.475s" repeatCount="indefinite" path="M295,150 L190,255"/><animate attributeName="opacity" values="0;1;0" dur="1.9s" begin="0.475s" repeatCount="indefinite"/></circle>
+            <circle r="3.2" fill="#f59e0b"><animateMotion dur="1.9s" begin="0.95s" repeatCount="indefinite" path="M190,255 L85,150"/><animate attributeName="opacity" values="0;1;0" dur="1.9s" begin="0.95s" repeatCount="indefinite"/></circle>
+            <circle r="3.2" fill="#8b5cf6"><animateMotion dur="1.9s" begin="1.425s" repeatCount="indefinite" path="M85,150 L190,45"/><animate attributeName="opacity" values="0;1;0" dur="1.9s" begin="1.425s" repeatCount="indefinite"/></circle>
+            <!-- N1: top (190,45) — Vetted Supply -->
+            <circle cx="190" cy="45" r="25" fill="rgba(163,230,53,0.1)" stroke="rgba(163,230,53,0.45)" stroke-width="1.5" filter="url(#fw-glow-sm)"/>
+            <circle cx="190" cy="45" r="14" fill="#a3e635"/>
+            <text x="190" y="13" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Vetted</text>
+            <text x="190" y="4" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Supply</text>
+            <!-- N2: right (295,150) — AI Match -->
+            <circle cx="295" cy="150" r="25" fill="rgba(59,130,246,0.1)" stroke="rgba(59,130,246,0.45)" stroke-width="1.5" filter="url(#fw-glow-sm)"/>
+            <circle cx="295" cy="150" r="14" fill="#3b82f6"/>
+            <text x="334" y="145" text-anchor="start" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">AI-Curated</text>
+            <text x="334" y="156" text-anchor="start" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Match</text>
+            <!-- N3: bottom (190,255) — Hire Success -->
+            <circle cx="190" cy="255" r="25" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.45)" stroke-width="1.5" filter="url(#fw-glow-sm)"/>
+            <circle cx="190" cy="255" r="14" fill="#f59e0b"/>
+            <text x="190" y="287" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Hire</text>
+            <text x="190" y="297" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Success</text>
+            <!-- N4: left (85,150) — Trust & Referral -->
+            <circle cx="85" cy="150" r="25" fill="rgba(99,102,241,0.1)" stroke="rgba(99,102,241,0.45)" stroke-width="1.5" filter="url(#fw-glow-sm)"/>
+            <circle cx="85" cy="150" r="14" fill="#8b5cf6"/>
+            <text x="46" y="145" text-anchor="end" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Trust &</text>
+            <text x="46" y="156" text-anchor="end" fill="rgba(255,255,255,0.75)" font-size="8" font-family="Inter,sans-serif" font-weight="600">Referral</text>
+            <!-- Center pulse + hub -->
+            <circle cx="190" cy="150" r="30" fill="none" stroke="#a3e635" stroke-width="0.7" opacity="0"><animate attributeName="r" from="30" to="52" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.5" to="0" dur="2.2s" repeatCount="indefinite"/></circle>
+            <circle cx="190" cy="150" r="30" fill="none" stroke="#a3e635" stroke-width="0.7" opacity="0"><animate attributeName="r" from="30" to="52" dur="2.2s" begin="1.1s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.5" to="0" dur="2.2s" begin="1.1s" repeatCount="indefinite"/></circle>
+            <circle cx="190" cy="150" r="22" fill="rgba(163,230,53,0.12)" filter="url(#fw-glow)"/>
+            <circle cx="190" cy="150" r="14" fill="#a3e635"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11: Validation Plan -->
   <section class="slide" data-slide="9">
     <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"><div class="mb-4 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">09 — Validation Plan</span></div><h2 class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-8 max-w-4xl">Before we build. <span class="text-gradient">6 experiments, 6 weeks.</span></h2><div class="stagger-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">1</div><h3 class="text-sm font-semibold">Customer Interviews</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">30 freelancers + 30 founders. Validate pain frequency.</p><div class="text-[10px] font-semibold text-lime-400">Pass: ≥70% report >5 hrs/week wasted</div></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">2</div><h3 class="text-sm font-semibold">Landing Page + Waitlist</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Paid traffic to teaser. "Pay ₹299 to skip line."</p><div class="text-[10px] font-semibold text-lime-400">Pass: ≥8% waitlist CVR, ≥100 paid-skip</div></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">3</div><h3 class="text-sm font-semibold">Demo Video</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">90-sec Dropbox-style walkthrough on LinkedIn + design communities.</p><div class="text-[10px] font-semibold text-lime-400">Pass: ≥500 emails captured</div></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">4</div><h3 class="text-sm font-semibold">Concierge MVP</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Manual Telegram matching. Charge 12%.</p><div class="text-[10px] font-semibold text-lime-400">Pass: 10 paid projects at 12% take</div></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">5</div><h3 class="text-sm font-semibold">Satisfaction Guarantee Test</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">7-day money-back on concierge matches.</p><div class="text-[10px] font-semibold text-lime-400">Pass: <15% refund rate</div></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-2"><div class="w-6 h-6 rounded-md bg-lime-400/10 flex items-center justify-center text-lime-400 text-[10px] font-bold">6</div><h3 class="text-sm font-semibold">SaaS Pre-sale</h3></div><p class="text-xs text-neutral-500 leading-relaxed mb-2">Sell 20 "founding client" subs at ₹2,999/mo pre-launch.</p><div class="text-[10px] font-semibold text-lime-400">Pass: 15 paid subs in 21 days</div></div></div><div class="stagger-4 flex items-start gap-3 bg-red-500/5 p-4 rounded-xl border border-red-500/10"><i data-lucide="skull" class="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5"></i><span class="text-xs text-red-300/80 leading-relaxed"><span class="text-red-400 font-semibold">Kill Criteria:</span> If fewer than 3 of 6 experiments hit their success signal within 8 weeks, we pivot the segment or kill the idea entirely. No sunk-cost fallacy.</span></div></div>
   </section>
@@ -192,23 +286,132 @@ tailwind.config = {
     <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"><div class="mb-4 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">12 — Risks & Mitigations</span></div><h2 class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-8 max-w-4xl">Every objection owned, <span class="text-gradient">not hidden.</span></h2><div class="stagger-3 grid grid-cols-1 md:grid-cols-2 gap-4"><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Two-sided cold-start</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">Concierge MVP seeds both sides manually. Phase 1 targets accelerator portfolios with "free first hire."</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">AI replaces our freelancers</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">Pivoted to mid-level creatives who WIELD AI. Challenges test judgment, not just output.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Upwork clones this feature</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">We own a niche (funded startups × mid-level creatives) they can't serve without cannibalizing their ₹5 gig core.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Low willingness to pay (India)</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">₹2,999/mo targets funded cos with ₹8Cr+ raised. Higher value = higher WTP.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Skill challenge gaming (AI submissions)</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">Challenges reviewed by vetted peer reviewers (₹500/review). Includes live screen-share round.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Regulatory: escrow, DPDP, KYC</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">No DIY escrow — Razorpay Route is RBI-compliant. DPDP consent built in. KYC via DigiLocker API.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Referral cost eats margin</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">₹500 referral from ₹6,000 commission. Net ₹5,500. Positive from match #1.</p></div><div class="rounded-2xl p-5 bg-white/5 border border-white/5 card-hover"><div class="flex items-center gap-2 mb-1.5"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400/60"></i><span class="text-[10px] font-bold tracking-widest text-red-400/80">RISK</span></div><p class="text-xs text-neutral-400 leading-relaxed mb-3">Indian marketplace graveyard</p><div class="flex items-center gap-2 mb-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-lime-400/60"></i><span class="text-[10px] font-bold tracking-widest text-lime-400/80">MITIGATION</span></div><p class="text-xs text-neutral-500 leading-relaxed">Refrens/Truelancer tried everyone. We're vertically narrow + segment-specific + guarantee-backed.</p></div></div></div>
   </section>
 
-  <!-- SLIDE 14: The Ask -->
+  <!-- SLIDE 14: Vision -->
   <section class="slide" data-slide="13">
-    <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto"><div class="mb-4 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">13 — The Ask & Vision</span></div><h2 class="stagger-2 text-3xl md:text-5xl lg:text-6xl font-medium tracking-tighter leading-[0.95] mb-8 max-w-4xl">Your first freelance gig should be as easy to land as your <span class="text-gradient">first ride on Uber</span>.</h2><div class="stagger-3 grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="space-y-4"><div class="rounded-2xl p-6 bg-lime-950/20 border border-lime-400/10"><div class="text-[10px] font-bold tracking-widest text-lime-400 mb-2">THE ASK</div><div class="text-3xl font-semibold tracking-tighter text-gradient mb-1">₹1.5 Cr Pre-Seed</div><p class="text-xs text-neutral-500">18 months runway. 40% product · 30% acquisition · 20% ops · 10% legal/compliance.</p></div><div class="rounded-2xl p-6 bg-white/5 border border-white/5"><div class="text-[10px] font-bold tracking-widest text-neutral-400 mb-3">3-YEAR PROJECTIONS</div><div class="grid grid-cols-3 gap-3 text-center mb-4"><div><div class="text-lg font-semibold">₹1.2 Cr</div><div class="text-[9px] text-neutral-500">Y1 Revenue</div></div><div><div class="text-lg font-semibold">₹6.8 Cr</div><div class="text-[9px] text-neutral-500">Y2 Revenue</div></div><div><div class="text-lg font-semibold text-lime-400">₹26.8 Cr</div><div class="text-[9px] text-neutral-500">Y3 Revenue</div></div></div><div class="space-y-1.5 text-[10px] text-neutral-400"><div class="flex justify-between p-1.5 bg-white/5 rounded"><span>Y1: ₹2.5 Cr burn | Team of 6</span><span class="text-red-400">-₹1.3 Cr EBITDA</span></div><div class="flex justify-between p-1.5 bg-white/5 rounded"><span>Y2: ₹6 Cr burn | Team of 15</span><span class="text-lime-400">+₹0.8 Cr EBITDA</span></div><div class="flex justify-between p-1.5 bg-white/5 rounded"><span>Y3: ₹12 Cr burn | Team of 30</span><span class="text-lime-400">+₹14.8 Cr EBITDA</span></div></div><div class="text-[10px] text-neutral-500 mt-3">Breakeven: mid-Y3. Total funding needed: ~₹5 Cr across pre-seed + seed.</div></div><div class="rounded-2xl p-6 bg-white/5 border border-white/5"><div class="text-[10px] font-bold tracking-widest text-neutral-400 mb-2">LOOKING FOR</div><p class="text-xs text-neutral-400">Technical co-founder (full-stack + ML) + first product designer</p></div></div><div class="space-y-4"><div class="flex flex-col justify-center items-center text-center p-6 rounded-[32px] border border-lime-400/10 bg-lime-950/10 relative overflow-hidden"><div class="absolute top-0 right-0 w-24 h-24 bg-lime-400/5 rounded-full blur-[40px]"></div><div class="relative z-10"><div class="w-14 h-14 rounded-2xl bg-lime-400 flex items-center justify-center mb-4 mx-auto shadow-lg shadow-lime-400/20"><i data-lucide="user" class="w-7 h-7 text-neutral-900"></i></div><h3 class="text-xl font-semibold tracking-tighter mb-1">Neel Prabir Singh</h3><p class="text-[10px] text-lime-400 font-semibold mb-2">Founder, LUMILINK</p><p class="text-[10px] text-neutral-400 mb-4 max-w-[220px] mx-auto">Design & Strategy. 3+ years freelance/agency experience. Obsessed with trust infrastructure.</p><div class="space-y-2 text-xs"><a href="mailto:neelpksingh@gmail.com" class="flex items-center justify-center gap-2 text-neutral-400 hover:text-lime-400 transition-colors"><i data-lucide="mail" class="w-3.5 h-3.5"></i>neelpksingh@gmail.com</a><a href="tel:+919773985594" class="flex items-center justify-center gap-2 text-neutral-400 hover:text-lime-400 transition-colors"><i data-lucide="phone" class="w-3.5 h-3.5"></i>+91 9773985594</a></div></div></div><div class="flex flex-col justify-center items-center text-center p-6 rounded-[32px] border border-blue-400/10 bg-blue-950/10 relative overflow-hidden"><div class="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/5 rounded-full blur-[40px]"></div><div class="relative z-10"><div class="w-14 h-14 rounded-2xl bg-blue-400 flex items-center justify-center mb-4 mx-auto shadow-lg shadow-blue-400/20"><i data-lucide="code" class="w-7 h-7 text-neutral-900"></i></div><h3 class="text-xl font-semibold tracking-tighter mb-1">Biswajeet Rout</h3><p class="text-[10px] text-blue-400 font-semibold mb-2">Co-Founder, LUMILINK</p><p class="text-[10px] text-neutral-400 mb-4 max-w-[220px] mx-auto">Full-Stack & ML. Built scalable products & AI matching systems from 0→1.</p><div class="space-y-2 text-xs"><a href="mailto:biswyaa@gmail.com" class="flex items-center justify-center gap-2 text-neutral-400 hover:text-blue-400 transition-colors"><i data-lucide="mail" class="w-3.5 h-3.5"></i>biswyaa@gmail.com</a><a href="tel:+917045095070" class="flex items-center justify-center gap-2 text-neutral-400 hover:text-blue-400 transition-colors"><i data-lucide="phone" class="w-3.5 h-3.5"></i>+91 7045095070</a></div></div></div></div></div></div>
+    <div class="flex flex-col justify-center h-full px-6 md:px-10 lg:px-16 max-w-7xl mx-auto">
+      <div class="mb-2 stagger-1"><span class="text-[10px] font-bold tracking-[0.2em] uppercase text-lime-400">13 — The Vision</span></div>
+      <h2 class="stagger-2 text-2xl md:text-4xl lg:text-[44px] font-medium tracking-tighter leading-[0.95] mb-4 max-w-3xl">India's trust layer for creative work. <span class="text-gradient">2026 → 2030.</span></h2>
+      <div class="stagger-3 grid grid-cols-1 lg:grid-cols-5 gap-4 mb-3 items-center">
+        <div class="lg:col-span-2 space-y-1.5">
+          <div class="flex gap-2.5 items-start p-2.5 rounded-xl bg-white/5 border border-white/5">
+            <div class="w-7 h-7 rounded-lg bg-lime-400/10 flex items-center justify-center flex-shrink-0"><i data-lucide="users" class="w-3.5 h-3.5 text-lime-400"></i></div>
+            <div><div class="text-xs font-semibold mb-0.5">1M+ Creatives by 2030</div><p class="text-[10px] text-neutral-500">Every mid-level creative in India — verified, discoverable, trusted.</p></div>
+          </div>
+          <div class="flex gap-2.5 items-start p-2.5 rounded-xl bg-white/5 border border-white/5">
+            <div class="w-7 h-7 rounded-lg bg-blue-400/10 flex items-center justify-center flex-shrink-0"><i data-lucide="building-2" class="w-3.5 h-3.5 text-blue-400"></i></div>
+            <div><div class="text-xs font-semibold mb-0.5">50K Startups Served</div><p class="text-[10px] text-neutral-500">The default hiring layer for funded companies across India.</p></div>
+          </div>
+          <div class="flex gap-2.5 items-start p-2.5 rounded-xl bg-white/5 border border-white/5">
+            <div class="w-7 h-7 rounded-lg bg-purple-400/10 flex items-center justify-center flex-shrink-0"><i data-lucide="globe-2" class="w-3.5 h-3.5 text-purple-400"></i></div>
+            <div><div class="text-xs font-semibold mb-0.5">SEA Expansion by Y3</div><p class="text-[10px] text-neutral-500">Indonesia, Philippines — same trust stack, new markets.</p></div>
+          </div>
+          <div class="flex gap-2.5 items-start p-2.5 rounded-xl bg-white/5 border border-white/5">
+            <div class="w-7 h-7 rounded-lg bg-amber-400/10 flex items-center justify-center flex-shrink-0"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-400"></i></div>
+            <div><div class="text-xs font-semibold mb-0.5">The Trust Standard</div><p class="text-[10px] text-neutral-500">Skills verified. Contracts enforced. Payments protected. Always.</p></div>
+          </div>
+        </div>
+        <div class="lg:col-span-3 flex justify-center items-center relative">
+          <svg viewBox="0 0 480 290" class="w-full" style="max-height:230px;">
+            <defs>
+              <filter id="vglow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="vglow-sm"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <radialGradient id="vbg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#a3e635" stop-opacity="0.09"/><stop offset="100%" stop-color="#a3e635" stop-opacity="0"/></radialGradient>
+              <radialGradient id="vbg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.06"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0"/></radialGradient>
+            </defs>
+            <!-- Ambient glow -->
+            <ellipse cx="240" cy="145" rx="150" ry="110" fill="url(#vbg)"/>
+            <ellipse cx="240" cy="145" rx="200" ry="140" fill="url(#vbg2)"/>
+            <!-- Orbit rings -->
+            <circle cx="240" cy="145" r="80" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+            <circle cx="240" cy="145" r="128" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="1" stroke-dasharray="6 10"/>
+            <!-- Connection lines: center to near nodes -->
+            <line x1="240" y1="145" x2="160" y2="88" stroke="rgba(163,230,53,0.22)" stroke-width="1.5"/>
+            <line x1="240" y1="145" x2="320" y2="88" stroke="rgba(99,102,241,0.22)" stroke-width="1.5"/>
+            <line x1="240" y1="145" x2="320" y2="202" stroke="rgba(163,230,53,0.22)" stroke-width="1.5"/>
+            <line x1="240" y1="145" x2="160" y2="202" stroke="rgba(59,130,246,0.22)" stroke-width="1.5"/>
+            <!-- Connection lines: center to far nodes -->
+            <line x1="240" y1="145" x2="114" y2="145" stroke="rgba(163,230,53,0.1)" stroke-width="1" stroke-dasharray="3 6"/>
+            <line x1="240" y1="145" x2="366" y2="145" stroke="rgba(99,102,241,0.1)" stroke-width="1" stroke-dasharray="3 6"/>
+            <line x1="240" y1="145" x2="182" y2="22" stroke="rgba(59,130,246,0.1)" stroke-width="1" stroke-dasharray="3 6"/>
+            <line x1="240" y1="145" x2="298" y2="265" stroke="rgba(245,158,11,0.1)" stroke-width="1" stroke-dasharray="3 6"/>
+            <!-- Particles: center → near nodes (one-way flow outward) -->
+            <circle r="2.5" fill="#a3e635"><animateMotion dur="2.1s" repeatCount="indefinite" path="M240,145 L160,88"/><animate attributeName="opacity" values="0;1;0" dur="2.1s" repeatCount="indefinite"/></circle>
+            <circle r="2.5" fill="#6366f1"><animateMotion dur="2.7s" begin="0.6s" repeatCount="indefinite" path="M240,145 L320,88"/><animate attributeName="opacity" values="0;1;0" dur="2.7s" begin="0.6s" repeatCount="indefinite"/></circle>
+            <circle r="2.5" fill="#a3e635"><animateMotion dur="2.3s" begin="1.2s" repeatCount="indefinite" path="M240,145 L320,202"/><animate attributeName="opacity" values="0;1;0" dur="2.3s" begin="1.2s" repeatCount="indefinite"/></circle>
+            <circle r="2.5" fill="#3b82f6"><animateMotion dur="2.5s" begin="1.9s" repeatCount="indefinite" path="M240,145 L160,202"/><animate attributeName="opacity" values="0;1;0" dur="2.5s" begin="1.9s" repeatCount="indefinite"/></circle>
+            <!-- Particles: near nodes → center (return flow) -->
+            <circle r="1.8" fill="#84cc16"><animateMotion dur="2.1s" begin="1.05s" repeatCount="indefinite" path="M160,88 L240,145"/><animate attributeName="opacity" values="0;0.7;0" dur="2.1s" begin="1.05s" repeatCount="indefinite"/></circle>
+            <circle r="1.8" fill="#818cf8"><animateMotion dur="2.7s" begin="1.95s" repeatCount="indefinite" path="M320,88 L240,145"/><animate attributeName="opacity" values="0;0.7;0" dur="2.7s" begin="1.95s" repeatCount="indefinite"/></circle>
+            <!-- Far node particles -->
+            <circle r="2" fill="#a3e635"><animateMotion dur="3.3s" begin="0.4s" repeatCount="indefinite" path="M240,145 L114,145"/><animate attributeName="opacity" values="0;0.6;0" dur="3.3s" begin="0.4s" repeatCount="indefinite"/></circle>
+            <circle r="2" fill="#6366f1"><animateMotion dur="3.6s" begin="1.1s" repeatCount="indefinite" path="M240,145 L366,145"/><animate attributeName="opacity" values="0;0.6;0" dur="3.6s" begin="1.1s" repeatCount="indefinite"/></circle>
+            <!-- Near ring nodes -->
+            <circle cx="160" cy="88" r="21" fill="rgba(99,102,241,0.1)" stroke="rgba(99,102,241,0.35)" stroke-width="1" filter="url(#vglow-sm)"/>
+            <circle cx="160" cy="88" r="12" fill="#6366f1" opacity="0.88"/>
+            <text x="160" y="115" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="7.5" font-family="Inter,sans-serif" font-weight="500">Designer</text>
+            <circle cx="320" cy="88" r="21" fill="rgba(59,130,246,0.1)" stroke="rgba(59,130,246,0.35)" stroke-width="1" filter="url(#vglow-sm)"/>
+            <circle cx="320" cy="88" r="12" fill="#3b82f6" opacity="0.88"/>
+            <text x="320" y="115" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="7.5" font-family="Inter,sans-serif" font-weight="500">Startup</text>
+            <circle cx="320" cy="202" r="21" fill="rgba(163,230,53,0.1)" stroke="rgba(163,230,53,0.35)" stroke-width="1" filter="url(#vglow-sm)"/>
+            <circle cx="320" cy="202" r="12" fill="#a3e635" opacity="0.88"/>
+            <text x="320" y="229" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="7.5" font-family="Inter,sans-serif" font-weight="500">Motion</text>
+            <circle cx="160" cy="202" r="21" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.35)" stroke-width="1" filter="url(#vglow-sm)"/>
+            <circle cx="160" cy="202" r="12" fill="#f59e0b" opacity="0.88"/>
+            <text x="160" y="229" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="7.5" font-family="Inter,sans-serif" font-weight="500">Agency</text>
+            <!-- Far ring nodes -->
+            <circle cx="114" cy="145" r="15" fill="rgba(163,230,53,0.07)" stroke="rgba(163,230,53,0.22)" stroke-width="1"/>
+            <circle cx="114" cy="145" r="8" fill="#84cc16" opacity="0.75"/>
+            <text x="114" y="166" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="6.5" font-family="Inter,sans-serif">Writer</text>
+            <circle cx="366" cy="145" r="15" fill="rgba(99,102,241,0.07)" stroke="rgba(99,102,241,0.22)" stroke-width="1"/>
+            <circle cx="366" cy="145" r="8" fill="#6366f1" opacity="0.75"/>
+            <text x="366" y="166" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="6.5" font-family="Inter,sans-serif">VC Fund</text>
+            <circle cx="182" cy="22" r="15" fill="rgba(59,130,246,0.07)" stroke="rgba(59,130,246,0.22)" stroke-width="1"/>
+            <circle cx="182" cy="22" r="8" fill="#3b82f6" opacity="0.75"/>
+            <text x="182" y="43" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="6.5" font-family="Inter,sans-serif">Strategist</text>
+            <circle cx="298" cy="265" r="15" fill="rgba(245,158,11,0.07)" stroke="rgba(245,158,11,0.22)" stroke-width="1"/>
+            <circle cx="298" cy="265" r="8" fill="#f59e0b" opacity="0.75"/>
+            <text x="298" y="286" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="6.5" font-family="Inter,sans-serif">SEA</text>
+            <!-- Center pulse rings -->
+            <circle cx="240" cy="145" r="34" fill="none" stroke="#a3e635" stroke-width="0.8" opacity="0"><animate attributeName="r" from="34" to="62" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.55" to="0" dur="2.4s" repeatCount="indefinite"/></circle>
+            <circle cx="240" cy="145" r="34" fill="none" stroke="#a3e635" stroke-width="0.8" opacity="0"><animate attributeName="r" from="34" to="62" dur="2.4s" begin="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.55" to="0" dur="2.4s" begin="1.2s" repeatCount="indefinite"/></circle>
+            <!-- Center core -->
+            <circle cx="240" cy="145" r="30" fill="rgba(163,230,53,0.1)" stroke="rgba(163,230,53,0.28)" stroke-width="1.5"/>
+            <circle cx="240" cy="145" r="20" fill="rgba(163,230,53,0.22)" filter="url(#vglow)"/>
+            <circle cx="240" cy="145" r="13" fill="#a3e635"/>
+            <text x="240" y="173" text-anchor="middle" fill="rgba(163,230,53,0.65)" font-size="7" font-family="Inter,sans-serif" font-weight="700" letter-spacing="2">LUMILINK</text>
+          </svg>
+        </div>
+      </div>
+      <!-- Team row -->
+      <div class="stagger-4 grid grid-cols-3 gap-2.5">
+        <div class="flex items-center gap-2.5 p-3 rounded-2xl border border-lime-400/10 bg-lime-950/10">
+          <div class="w-9 h-9 rounded-xl bg-lime-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-lime-400/20"><i data-lucide="user" class="w-4 h-4 text-neutral-900"></i></div>
+          <div><div class="text-xs font-semibold leading-tight">Neel Prabir Singh</div><div class="text-[9px] text-lime-400 font-semibold mb-0.5">Founder</div><a href="mailto:neelpksingh@gmail.com" class="text-[9px] text-neutral-500 hover:text-lime-400 transition-colors block truncate">neelpksingh@gmail.com</a><a href="tel:+919773985594" class="text-[9px] text-neutral-500 hover:text-lime-400 transition-colors block">+91 9773985594</a></div>
+        </div>
+        <div class="flex items-center gap-2.5 p-3 rounded-2xl border border-blue-400/10 bg-blue-950/10">
+          <div class="w-9 h-9 rounded-xl bg-blue-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-400/20"><i data-lucide="code" class="w-4 h-4 text-neutral-900"></i></div>
+          <div><div class="text-xs font-semibold leading-tight">Biswajeet Rout</div><div class="text-[9px] text-blue-400 font-semibold mb-0.5">Co-Founder</div><a href="mailto:biswyaa@gmail.com" class="text-[9px] text-neutral-500 hover:text-blue-400 transition-colors block truncate">biswyaa@gmail.com</a><a href="tel:+917045095070" class="text-[9px] text-neutral-500 hover:text-blue-400 transition-colors block">+91 7045095070</a></div>
+        </div>
+        <div class="flex items-center gap-2.5 p-3 rounded-2xl border border-purple-400/10 bg-purple-950/10">
+          <div class="w-9 h-9 rounded-xl bg-purple-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-400/20"><i data-lucide="briefcase" class="w-4 h-4 text-neutral-900"></i></div>
+          <div><div class="text-xs font-semibold leading-tight">Saish Bhujbal</div><div class="text-[9px] text-purple-400 font-semibold mb-0.5">Co-Founder</div><a href="mailto:2025.saishb@isu.ac.in" class="text-[9px] text-neutral-500 hover:text-purple-400 transition-colors block truncate">2025.saishb@isu.ac.in</a><a href="tel:+919022917574" class="text-[9px] text-neutral-500 hover:text-purple-400 transition-colors block">+91 90229 17574</a></div>
+        </div>
+      </div>
+    </div>
   </section>
 
 </main>
 
 <nav id="bottomNav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/10 bg-neutral-900/90" style="backdrop-filter: blur(16px);"><button onclick="prevSlide()" class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button><div class="flex gap-1.5" id="bottomDots"></div><button onclick="nextSlide()" class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button></nav>
 
-<div class="fixed bottom-0 left-0 right-0 h-0.5 bg-neutral-800 z-[100]"><div class="h-full bg-lime-400 transition-all ease-out" id="progressBar" style="width: 7.14%; transition-duration: 850ms;"></div></div>
+<div class="fixed bottom-0 left-0 right-0 h-0.5 bg-neutral-800 z-[100]"><div class="h-full bg-lime-400 transition-all ease-out" id="progressBar" style="width: 6.67%; transition-duration: 850ms;"></div></div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
   lucide.createIcons();
 
   let currentSlide = 0;
-  const totalSlides = 14;
+  const totalSlides = 15;
   let isAnimating = false;
   const topDotsContainer = document.getElementById('navDots');
   const bottomDotsContainer = document.getElementById('bottomDots');
@@ -382,6 +585,27 @@ tailwind.config = {
   });
 
   renderCards();
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  }
+  window.toggleFullscreen = toggleFullscreen;
+
+  document.addEventListener('fullscreenchange', () => {
+    const expand = document.querySelector('.fs-expand');
+    const shrink = document.querySelector('.fs-shrink');
+    if (document.fullscreenElement) {
+      expand.style.display = 'none';
+      shrink.style.display = 'block';
+    } else {
+      expand.style.display = 'block';
+      shrink.style.display = 'none';
+    }
+  });
 </script>
 </body>
 </html>
