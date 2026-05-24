@@ -6,6 +6,9 @@
 <title>LUMILINK — Bulletproofed Pitch Deck</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script>
 tailwind.config = {
   theme: {
@@ -101,11 +104,57 @@ tailwind.config = {
   body .theme-icon-dark { display: none; }
   body.light-mode .theme-icon-light { display: none; }
   body.light-mode .theme-icon-dark { display: block; }
+
+  .export-menu {
+    min-width: 176px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  }
+
+  .export-status-backdrop {
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: blur(12px);
+  }
+
+  body.export-mode * {
+    animation-play-state: paused !important;
+  }
+
+  body.export-mode header,
+  body.export-mode #bottomNav,
+  body.export-mode #progressTrack,
+  body.export-mode #exportStatus {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.export-mode .slide {
+    opacity: 0 !important;
+    transform: none !important;
+    filter: none !important;
+    pointer-events: none !important;
+  }
+
+  body.export-mode .slide.export-current {
+    opacity: 1 !important;
+    pointer-events: all !important;
+  }
+
+  body.export-mode .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: #84cc16 !important;
+    color: #84cc16 !important;
+  }
+
+  body.export-mode .text-gradient-light {
+    background: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+    color: #ffffff !important;
+  }
 </style>
 </head>
 <body class="font-inter">
 
-<div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+<div id="deckBackdrop" class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
   <div class="absolute top-[-15%] left-[-10%] w-[700px] h-[700px] bg-lime-400/[0.03] blob-anim"></div>
   <div class="absolute bottom-[-15%] right-[-10%] w-[600px] h-[600px] bg-lime-400/[0.03] blob-anim-delay"></div>
   <div class="absolute top-[40%] left-[50%] w-[400px] h-[400px] bg-blue-400/[0.03] blob-anim" style="animation-delay: -5s;"></div>
@@ -119,6 +168,16 @@ tailwind.config = {
   <div class="flex items-center gap-4">
     <span class="slide-number text-xs text-neutral-500 tracking-widest"><span id="currentSlide">01</span> / 15</span>
     <div class="flex gap-1.5" id="navDots"></div>
+    <div class="relative">
+      <button id="exportToggle" onclick="toggleExportMenu()" class="nav-btn h-8 rounded-lg bg-white/5 px-3 text-[11px] font-semibold tracking-[0.12em] text-neutral-200 uppercase flex items-center gap-2 select-none" title="Download deck">
+        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        <span>Download</span>
+      </button>
+      <div id="exportMenu" class="export-menu hidden absolute right-0 top-11 rounded-2xl border border-white/10 bg-neutral-900/95 p-2">
+        <button onclick="exportDeck('pdf')" class="w-full rounded-xl px-3 py-2 text-left text-xs font-medium text-neutral-200 transition hover:bg-white/10">PDF</button>
+        <button onclick="exportDeck('ppt')" class="w-full rounded-xl px-3 py-2 text-left text-xs font-medium text-neutral-200 transition hover:bg-white/10">PPT</button>
+      </div>
+    </div>
     <button onclick="toggleTheme()" class="nav-btn w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center select-none" title="Toggle Light/Dark Mode">
       <i data-lucide="sun" class="w-4 h-4 theme-icon-light"></i>
       <i data-lucide="moon" class="w-4 h-4 theme-icon-dark"></i>
@@ -404,7 +463,16 @@ tailwind.config = {
 
 <nav id="bottomNav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3 rounded-2xl border border-white/10 bg-neutral-900/90" style="backdrop-filter: blur(16px);"><button onclick="prevSlide()" class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button><div class="flex gap-1.5" id="bottomDots"></div><button onclick="nextSlide()" class="nav-btn w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center select-none"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button></nav>
 
-<div class="fixed bottom-0 left-0 right-0 h-0.5 bg-neutral-800 z-[100]"><div class="h-full bg-lime-400 transition-all ease-out" id="progressBar" style="width: 6.67%; transition-duration: 850ms;"></div></div>
+<div id="progressTrack" class="fixed bottom-0 left-0 right-0 h-0.5 bg-neutral-800 z-[100]"><div class="h-full bg-lime-400 transition-all ease-out" id="progressBar" style="width: 6.67%; transition-duration: 850ms;"></div></div>
+
+<div id="exportStatus" class="hidden fixed inset-0 z-[120] items-center justify-center px-6">
+  <div class="export-status-backdrop absolute inset-0"></div>
+  <div class="relative z-10 w-full max-w-sm rounded-3xl border border-white/10 bg-neutral-900/95 p-6 text-center shadow-2xl">
+    <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-lime-400">Preparing Download</div>
+    <div class="mb-2 text-lg font-semibold tracking-tight">Building your deck export</div>
+    <p id="exportStatusMessage" class="text-sm text-neutral-400">Rendering slide 1 of 15...</p>
+  </div>
+</div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
@@ -413,8 +481,13 @@ tailwind.config = {
   let currentSlide = 0;
   const totalSlides = 15;
   let isAnimating = false;
+  let isExporting = false;
   const topDotsContainer = document.getElementById('navDots');
   const bottomDotsContainer = document.getElementById('bottomDots');
+  const exportMenu = document.getElementById('exportMenu');
+  const exportToggle = document.getElementById('exportToggle');
+  const exportStatus = document.getElementById('exportStatus');
+  const exportStatusMessage = document.getElementById('exportStatusMessage');
 
   const topDots = [];
   const bottomDots = [];
@@ -437,6 +510,194 @@ tailwind.config = {
     topDots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
     bottomDots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
   }
+
+  function toggleExportMenu(forceState) {
+    if (isExporting) return;
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : exportMenu.classList.contains('hidden');
+    exportMenu.classList.toggle('hidden', !shouldOpen);
+  }
+
+  function closeExportMenu() {
+    toggleExportMenu(false);
+  }
+
+  function setExportStatus(visible, message = '') {
+    exportStatus.classList.toggle('hidden', !visible);
+    exportStatus.classList.toggle('flex', visible);
+    exportStatusMessage.textContent = message;
+    exportToggle.disabled = visible;
+    exportToggle.classList.toggle('opacity-60', visible);
+    exportToggle.classList.toggle('cursor-wait', visible);
+  }
+
+  function normalizeExportAnimations(node) {
+    node.querySelectorAll('[class*="stagger-"]').forEach((element) => {
+      element.style.animation = 'none';
+      element.style.opacity = '1';
+      element.style.transform = 'none';
+      element.style.filter = 'none';
+    });
+
+    node.querySelectorAll('[data-width]').forEach((bar) => {
+      bar.style.width = bar.dataset.width;
+    });
+
+    node.querySelectorAll('[data-height]').forEach((bar) => {
+      bar.style.height = bar.dataset.height;
+    });
+  }
+
+  async function waitForAssets(root) {
+    const images = Array.from(root.querySelectorAll('img'));
+    await Promise.all(images.map((img) => new Promise((resolve) => {
+      img.crossOrigin = 'anonymous';
+      img.referrerPolicy = 'no-referrer';
+      if (img.complete) {
+        resolve();
+        return;
+      }
+
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+    })));
+  }
+
+  async function captureSlide(slide, index) {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const originalActive = document.querySelector('.slide.active');
+
+    slides.forEach((item) => {
+      item.classList.remove('export-current', 'active', 'exit-up', 'exit-down');
+    });
+
+    slide.classList.add('active', 'export-current');
+    normalizeExportAnimations(slide);
+    document.body.classList.add('export-mode');
+
+    await waitForAssets(document.body);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const canvas = await html2canvas(document.body, {
+      backgroundColor: '#0a0a0a',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      scrollX: 0,
+      scrollY: 0
+    });
+
+    document.body.classList.remove('export-mode');
+    slide.classList.remove('export-current');
+    if (originalActive) {
+      originalActive.classList.add('active');
+    }
+
+    exportStatusMessage.textContent = `Rendered slide ${index + 1} of ${totalSlides}.`;
+    return {
+      data: canvas.toDataURL('image/png'),
+      width: canvas.width,
+      height: canvas.height
+    };
+  }
+
+  function getAspectFitPlacement(assetWidth, assetHeight, maxWidth, maxHeight) {
+    const scale = Math.min(maxWidth / assetWidth, maxHeight / assetHeight);
+    const width = assetWidth * scale;
+    const height = assetHeight * scale;
+
+    return {
+      width,
+      height,
+      x: (maxWidth - width) / 2,
+      y: (maxHeight - height) / 2
+    };
+  }
+
+  async function exportPdf(images) {
+    const { jsPDF } = window.jspdf;
+    const firstImage = images[0];
+    const pdfWidth = firstImage?.width || 1600;
+    const pdfHeight = firstImage?.height || 900;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [pdfWidth, pdfHeight] });
+
+    images.forEach((image, index) => {
+      if (index > 0) {
+        pdf.addPage([pdfWidth, pdfHeight], 'landscape');
+      }
+
+      const placement = getAspectFitPlacement(image.width, image.height, pdfWidth, pdfHeight);
+      pdf.addImage(image.data, 'PNG', placement.x, placement.y, placement.width, placement.height, undefined, 'FAST');
+    });
+
+    pdf.save('lumilink-deck.pdf');
+  }
+
+  async function exportPpt(images) {
+    const ppt = new PptxGenJS();
+    ppt.layout = 'LAYOUT_WIDE';
+    ppt.author = 'OpenCode';
+    ppt.company = 'LUMILINK';
+    ppt.subject = 'LUMILINK Pitch Deck';
+    ppt.title = 'LUMILINK Pitch Deck';
+
+    images.forEach((image) => {
+      const slide = ppt.addSlide();
+      slide.background = { color: '0A0A0A' };
+      const placement = getAspectFitPlacement(image.width, image.height, 13.333, 7.5);
+      slide.addImage({ data: image.data, x: placement.x, y: placement.y, w: placement.width, h: placement.height });
+    });
+
+    await ppt.writeFile({ fileName: 'lumilink-deck.pptx' });
+  }
+
+  async function exportDeck(format) {
+    if (isExporting) return;
+    if (!window.html2canvas || !window.jspdf?.jsPDF || !window.PptxGenJS) {
+      window.alert('Export libraries failed to load. Please refresh and try again.');
+      return;
+    }
+
+    isExporting = true;
+    closeExportMenu();
+    setExportStatus(true, 'Rendering slide 1 of 15...');
+
+    try {
+      if (document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const images = [];
+
+      for (const [index, slide] of slides.entries()) {
+        exportStatusMessage.textContent = `Rendering slide ${index + 1} of ${totalSlides}...`;
+        images.push(await captureSlide(slide, index));
+      }
+
+      exportStatusMessage.textContent = format === 'pdf' ? 'Generating PDF...' : 'Generating PowerPoint...';
+
+      if (format === 'pdf') {
+        await exportPdf(images);
+      } else {
+        await exportPpt(images);
+      }
+    } catch (error) {
+      console.error(error);
+      window.alert('The deck export failed. Please try again.');
+    } finally {
+      document.body.classList.remove('export-mode');
+      document.querySelectorAll('.slide').forEach((slide) => slide.classList.remove('export-current'));
+      setExportStatus(false, '');
+      isExporting = false;
+    }
+  }
+
+  window.toggleExportMenu = toggleExportMenu;
+  window.exportDeck = exportDeck;
 
   function updateSlide(newIndex, direction = 'next') {
     if (newIndex < 0 || newIndex >= totalSlides || newIndex === currentSlide) return;
@@ -479,8 +740,19 @@ tailwind.config = {
   window.toggleTheme = toggleTheme;
 
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeExportMenu();
+      return;
+    }
+
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevSlide(); }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (exportMenu.classList.contains('hidden')) return;
+    if (exportMenu.contains(e.target) || exportToggle.contains(e.target)) return;
+    closeExportMenu();
   });
 
   let touchStartX = 0, touchStartY = 0;
